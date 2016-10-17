@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Single field page</title>
+</head>
+<body>
+<h1>Single form page</h1>
+<p>Don't forget: </p>
+<p th:text="${user}">Last User:</p>
+<form action="Dashboard.html" method="post">
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td><input name="username" type="text" size="40"/></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input name="password" type="password" size="10"/></td>
+        </tr>
+        <tr>
+            <td><input value="submit" type="submit"/></td>
+            <td></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
