@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>GitMetrics</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 loginCard">
+            <h1>Git Metrics</h1>
+            <a class="btn btn-primary btn-lg btn-block"
+               th:href="${'https://github.com/login/oauth/authorize?client_id=' + client_id}" role="button">Login with
+                GitHub <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
