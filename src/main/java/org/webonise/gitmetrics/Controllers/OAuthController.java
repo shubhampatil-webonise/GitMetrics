@@ -1,34 +1,65 @@
 package org.webonise.gitmetrics.Controllers;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.webonise.gitmetrics.Services.AuthorizationService;
+import org.webonise.gitmetrics.Services.HttpRequestResponseService;
 
-@RestController
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+@Controller
 public class OAuthController {
 
-    @Value("${gitmetrics_client_id}")
-    private String client_id;
+    private static final Logger logger = Logger.getLogger(OAuthController.class.getName());
 
-    @Value("${gitmetrics_client_secret}")
-    private String client_secret;
+    @Autowired
+    HttpRequestResponseService httpRequestResponseService;
+
+    @Autowired
+    AuthorizationService authorizationService;
+
+    @Value("${gitmetrics.client.id}")
+    private String clientId;
+
+    @Value("${gitmetrics.client.secret}")
+    private String clientSecret;
+
+    @Value("${gitmetrics.client.scope}")
+    private String scope;
 
     @RequestMapping("/callback")
-    public String OAuthCallback(@RequestParam String code) {
+    public String oauthCallback(@RequestParam String code, RedirectAttributes redirectAttributes) {
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("client_id", clientId);
+        requestBody.put("client_secret", clientSecret);
+        requestBody.put("code", code);
 
-        map.add("client_id", client_id);
-        map.add("client_secret", client_secret);
-        map.add("code", code);
+        try {
+            String response = httpRequestResponseService.post("https://github.com/login/oauth/access_token", requestBody);
+            return "redirect:/authorize?" + response;
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
 
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.postForObject("https://github.com/login/oauth/access_token", map, String.class);
-        
-        return "redirect:/dashboard";
+        redirectAttributes.addAttribute("loginFailed", true);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/authorize")
+    public String authorizeUser(@RequestParam("access_token") String accessToken, RedirectAttributes redirectAttributes) {
+        if (authorizationService.isAuthorizedUser(accessToken)) {
+            return "redirect:/dashboard";
+        } else {
+            redirectAttributes.addAttribute("loginFailed", true);
+            return "redirect:/";
+        }
     }
 }
