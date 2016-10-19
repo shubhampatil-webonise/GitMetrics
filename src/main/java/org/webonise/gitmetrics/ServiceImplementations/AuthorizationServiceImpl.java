@@ -29,7 +29,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public boolean isAuthorizedUser(String accessToken) {
-        Map<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "token " + accessToken);
 
         try {

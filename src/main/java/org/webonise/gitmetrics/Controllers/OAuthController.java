@@ -37,7 +37,7 @@ public class OAuthController {
     @RequestMapping("/callback")
     public String oauthCallback(@RequestParam String code, RedirectAttributes redirectAttributes) {
 
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("client_id", clientId);
         requestBody.put("client_secret", clientSecret);
         requestBody.put("code", code);
