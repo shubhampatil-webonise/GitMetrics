@@ -1,4 +1,4 @@
-package org.webonise.springbootsessiondemo.Service;
+package org.webonise.gitmetrics.Services;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 

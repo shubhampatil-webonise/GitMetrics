@@ -1,4 +1,4 @@
-package org.webonise.springbootsessiondemo.ServiceImpl;
+package org.webonise.gitmetrics.ServiceImplementations;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
