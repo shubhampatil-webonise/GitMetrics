@@ -1,85 +1,69 @@
 package org.webonise.gitmetrics.ServiceImpl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.webonise.githubmetrics.webhooktest.Services.JsonParser;
+import org.webonise.gitmetrics.Services.JsonParser;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class JsonParserImpl implements JsonParser {
 
-    @Autowired
-    @Qualifier("resultMap")
-    private Map<String, Object> resultMap;
-
     @Override
-    public Map<String, Object> parse(JSONObject jsonObject, List<String> keys) {
+    public String parse(String jsonBody, List<String> keys) {
 
-//        for (String key : keys) {
-//            String[] innerKeys = key.split("\\.");
-//            Object value = getJsonValue(innerKeys, 0, jsonObject);
-//            resultMap.put(key, value);
-//        }
-        return resultMap;
-    }
+        JSONObject resultJsonObject = new JSONObject();
+        JSONObject jsonObject = new JSONObject(jsonBody);
 
-    public JsonElement getJsonValue(String[] keyList, int index, JsonObject jsonObject) {
+        for (String key : keys) {
+            List<String> innerKeys = Arrays.asList(key.split("\\."));
+            Object value = getJsonValue(innerKeys, jsonObject);
 
-//        Object currentValue = jsonObject;
+            if (value != null) {
 
-//        JsonElement currentValue = jsonObject;
-////        System.out.println(currentValue.getAsString());
-//
-//        for (String key : keyList) {
-//            System.out.println(key);
-//            try {
-//                currentValue = currentValue.getAsJsonPrimitive(key);
-//                System.out.println("adsad" + currentValue.toString());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-////            System.out.println(key);
-////            System.out.println(jsonObject.get(key));
-//
-////            try {
-////                currentValue = jsonObject.get(key);
-////                System.out.println(currentValue.getAsString());
-////            } catch (Exception e) {
-////                e.printStackTrace();
-////            }
-//
-//        }
-//
-//        return currentValue;
-        if (index < keyList.length) {
-            Iterator iterator = jsonObject.keys();
-            String currentInnerKey = keyList[index];
-            while (iterator.hasNext()) {
-                String key = (String) iterator.next();
-                if (key.equals(currentInnerKey)) {
-                    if (jsonObject.optJSONArray(key) == null && jsonObject.optJSONObject(key) == null) {
-                        // if (index == keyList.length - 1) {
-                        return jsonObject.get(key);
-                        //}
-                    } else if (jsonObject.optJSONObject(key) != null) {
-                        return getJsonValue(keyList, ++index, jsonObject.getJSONObject(key));
-                    } else if (jsonObject.optJSONArray(key) != null) {
-                        JSONArray jsonArray = jsonObject.getJSONArray(key);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            Object value = getJsonValue(keyList, ++index, jsonArray.getJSONObject(i));
-                            if (value != null)
-                                return value;
-                        }
-                    }
+                JSONObject currentJsonObject = resultJsonObject;
+                int index = 0;
+                String tempKey = innerKeys.get(index);
+                while (currentJsonObject.optJSONObject(tempKey) != null) {
+                    currentJsonObject = currentJsonObject.getJSONObject(tempKey);
+                    index = index + 1;
+                    tempKey = innerKeys.get(index);
                 }
+
+                for (int i = innerKeys.size() - 1; i > index; i--) {
+                    String currentKey = innerKeys.get(i);
+                    JSONObject tempJsonObject = new JSONObject();
+                    tempJsonObject.put(currentKey, value);
+                    value = tempJsonObject;
+                }
+
+                currentJsonObject.put(innerKeys.get(index), value);
             }
         }
 
+        return resultJsonObject.toString();
+    }
+
+    private Object getJsonValue(List<String> keyList, JSONObject jsonObject) {
+
+        JSONObject currentJsonObject = jsonObject;
+        for (String key : keyList) {
+
+            if (currentJsonObject.optJSONObject(key) != null) {
+                currentJsonObject = currentJsonObject.getJSONObject(key);
+            } else if (currentJsonObject.opt(key) != null) {
+                if (keyList.indexOf(key) == (keyList.size() - 1)) {
+                    return currentJsonObject.get(key);
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+
+        return currentJsonObject;
     }
 }
+
