@@ -1,11 +1,16 @@
 package org.webonise.springbootsessiondemo.Service;
 
-import org.springframework.web.servlet.ModelAndView;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 
 import javax.servlet.http.HttpSession;
 
 public interface SessionService {
-    ModelAndView startSession(Object object, String viewName);
 
-    ModelAndView endSession(HttpSession session, String viewName);
+    HttpSession getSession(HttpServletRequest request, boolean createIfNotExist);
+
+    void put(String key, Object value);
+
+    Object get(String key);
+
+    void clear();
 }
