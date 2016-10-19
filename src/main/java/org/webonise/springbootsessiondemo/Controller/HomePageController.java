@@ -1,5 +1,6 @@
 package org.webonise.springbootsessiondemo.Controller;
 
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,25 +10,22 @@ import org.webonise.springbootsessiondemo.Service.SessionService;
 import javax.servlet.http.HttpSession;
 
 @RestController
-public class LogOutController {
+public class HomePageController {
     @Autowired
-    SessionService service;
-    ModelAndView model;
+    private SessionService service;
+    private ModelAndView model;
+    private HttpSession session;
 
     @RequestMapping("/")
-    public ModelAndView home(HttpSession session) {
-        model = new ModelAndView("HomePage");
-        String sessionData = (String) session.getAttribute("user");
-        if (sessionData != null) {
-            model.addObject((session.getAttribute("user")));
+    public ModelAndView home(HttpServletRequest request) {
+        model = new ModelAndView();
+        session = service.getSession(request, false);
+        if (session == null) {
+            model.setViewName("HomePage");
+        } else {
+            model.addObject((session.getAttribute(DashboardController.Key)));
             model.setViewName("redirect:Dashboard");
         }
-        return model;
-    }
-
-    @RequestMapping("/endsession")
-    public ModelAndView check(HttpSession session) {
-        model = service.endSession(session, "redirect:/");
         return model;
     }
 }

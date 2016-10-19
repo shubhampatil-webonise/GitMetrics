@@ -1,28 +1,35 @@
 package org.webonise.springbootsessiondemo.ServiceImpl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 import org.webonise.springbootsessiondemo.Service.SessionService;
 
 import javax.servlet.http.HttpSession;
 
 @Service
 public class SessionServiceImpl implements SessionService {
-    @Autowired
-    ModelAndView model;
+    private HttpSession session;
 
     @Override
-    public ModelAndView startSession(Object object, String viewName) {
-        model.addObject("user", object);
-        model.setViewName(viewName);
-        return model;
+    public HttpSession getSession(HttpServletRequest request, boolean createIfNotExist) {
+        session = request.getSession(createIfNotExist);
+        return session;
+    }
+
+
+    @Override
+    public void put(String key, Object data) throws NullPointerException {
+        session.setAttribute(key, data);
     }
 
     @Override
-    public ModelAndView endSession(HttpSession session, String viewName) {
-        model.setViewName(viewName);
+    public Object get(String key) throws NullPointerException {
+        return session.getAttribute(key);
+
+    }
+
+    @Override
+    public void clear() throws NullPointerException {
         session.invalidate();
-        return model;
     }
 }
