@@ -1,4 +1,4 @@
-package org.webonise.gitmetrics.ServiceImpl;
+package org.webonise.gitmetrics.ServiceImplementations;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class JsonParserImpl implements JsonParser {
         List<String> innerKeys = Arrays.asList(key.split("\\."));
         Object value = getJsonValue(innerKeys, jsonObject);
 
-        return (String) value;
+        return (String) value.toString();
     }
 
     @Override
