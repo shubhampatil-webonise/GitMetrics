@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 public interface SessionService {
 
     HttpSession getSession(HttpServletRequest request, boolean createIfNotExist);
-
+    
     void put(String key, Object value);
 
     Object get(String key);

@@ -15,8 +15,7 @@ public class SessionServiceImpl implements SessionService {
         session = request.getSession(createIfNotExist);
         return session;
     }
-
-
+    
     @Override
     public void put(String key, Object data) throws NullPointerException {
         session.setAttribute(key, data);
@@ -25,7 +24,6 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public Object get(String key) throws NullPointerException {
         return session.getAttribute(key);
-
     }
 
     @Override

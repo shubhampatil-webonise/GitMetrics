@@ -1,5 +1,6 @@
 package org.webonise.gitmetrics.Controllers;
 
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.webonise.gitmetrics.Services.AuthorizationService;
 import org.webonise.gitmetrics.Services.HttpRequestResponseService;
+import org.webonise.gitmetrics.Services.SessionService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,10 +22,13 @@ public class OAuthController {
     private static final Logger logger = Logger.getLogger(OAuthController.class.getName());
 
     @Autowired
-    HttpRequestResponseService httpRequestResponseService;
+    private SessionService sessionService;
 
     @Autowired
-    AuthorizationService authorizationService;
+    private HttpRequestResponseService httpRequestResponseService;
+
+    @Autowired
+    private AuthorizationService authorizationService;
 
     @Value("${gitmetrics.client.id}")
     private String clientId;
@@ -36,7 +41,6 @@ public class OAuthController {
 
     @RequestMapping("/callback")
     public String oauthCallback(@RequestParam String code, RedirectAttributes redirectAttributes) {
-
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("client_id", clientId);
         requestBody.put("client_secret", clientSecret);
@@ -54,8 +58,13 @@ public class OAuthController {
     }
 
     @RequestMapping("/authorize")
-    public String authorizeUser(@RequestParam("access_token") String accessToken, RedirectAttributes redirectAttributes) {
+    public String authorizeUser(@RequestParam("access_token") String accessToken, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         if (authorizationService.isAuthorizedUser(accessToken)) {
+            if (sessionService.getSession(request, true) != null) {
+                sessionService.put("userAccessToken", accessToken);
+                sessionService.put("loggedIn", true);
+            }
+
             return "redirect:/dashboard";
         } else {
             redirectAttributes.addAttribute("loginFailed", true);
