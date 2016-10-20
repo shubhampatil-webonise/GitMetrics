@@ -61,7 +61,7 @@ public class OAuthController {
     public String authorizeUser(@RequestParam("access_token") String accessToken, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         if (authorizationService.isAuthorizedUser(accessToken)) {
             if (sessionService.getSession(request, true) != null) {
-                sessionService.put("userAccessToken", accessToken);
+                sessionService.put("accessToken", accessToken);
                 sessionService.put("loggedIn", true);
             }
 
