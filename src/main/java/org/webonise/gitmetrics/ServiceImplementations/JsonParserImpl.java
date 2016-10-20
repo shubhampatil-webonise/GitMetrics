@@ -16,7 +16,16 @@ public class JsonParserImpl implements JsonParser {
         List<String> innerKeys = Arrays.asList(key.split("\\."));
         Object value = getJsonValue(innerKeys, jsonObject);
 
-        return (String) value.toString();
+        return value.toString();
+    }
+
+    @Override
+    public String addToJson(String jsonBody, String key, Object value) {
+        JSONObject jsonObject = new JSONObject(jsonBody);
+        List<String> innerKeys = Arrays.asList(key.split("\\."));
+        jsonObject = add(jsonObject, innerKeys, value);
+
+        return jsonObject.toString();
     }
 
     @Override
@@ -30,28 +39,32 @@ public class JsonParserImpl implements JsonParser {
             Object value = getJsonValue(innerKeys, jsonObject);
 
             if (value != null) {
-
-                JSONObject currentJsonObject = resultJsonObject;
-                int index = 0;
-                String tempKey = innerKeys.get(index);
-                while (currentJsonObject.optJSONObject(tempKey) != null) {
-                    currentJsonObject = currentJsonObject.getJSONObject(tempKey);
-                    index = index + 1;
-                    tempKey = innerKeys.get(index);
-                }
-
-                for (int i = innerKeys.size() - 1; i > index; i--) {
-                    String currentKey = innerKeys.get(i);
-                    JSONObject tempJsonObject = new JSONObject();
-                    tempJsonObject.put(currentKey, value);
-                    value = tempJsonObject;
-                }
-
-                currentJsonObject.put(innerKeys.get(index), value);
+                resultJsonObject = add(resultJsonObject, innerKeys, value);
             }
         }
-
         return resultJsonObject.toString();
+    }
+
+    private JSONObject add(JSONObject currentJsonObject, List<String> innerKeys, Object value) {
+
+        int index = 0;
+        String tempKey = innerKeys.get(index);
+        while (currentJsonObject.optJSONObject(tempKey) != null) {
+            currentJsonObject = currentJsonObject.getJSONObject(tempKey);
+            index = index + 1;
+            tempKey = innerKeys.get(index);
+        }
+
+        for (int i = innerKeys.size() - 1; i > index; i--) {
+            String currentKey = innerKeys.get(i);
+            JSONObject tempJsonObject = new JSONObject();
+            tempJsonObject.put(currentKey, value);
+            value = tempJsonObject;
+        }
+
+        currentJsonObject.put(innerKeys.get(index), value);
+
+        return currentJsonObject;
     }
 
     private Object getJsonValue(List<String> keyList, JSONObject jsonObject) {
