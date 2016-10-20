@@ -11,6 +11,15 @@ import java.util.List;
 public class JsonParserImpl implements JsonParser {
 
     @Override
+    public String parse(String jsonBody, String key) {
+        JSONObject jsonObject = new JSONObject(jsonBody);
+        List<String> innerKeys = Arrays.asList(key.split("\\."));
+        Object value = getJsonValue(innerKeys, jsonObject);
+
+        return (String) value;
+    }
+
+    @Override
     public String parse(String jsonBody, List<String> keys) {
 
         JSONObject resultJsonObject = new JSONObject();
