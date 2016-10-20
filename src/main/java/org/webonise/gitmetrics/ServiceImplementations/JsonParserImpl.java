@@ -23,7 +23,7 @@ public class JsonParserImpl implements JsonParser {
     public String addToJson(String jsonBody, String key, Object value) {
         JSONObject jsonObject = new JSONObject(jsonBody);
         List<String> innerKeys = Arrays.asList(key.split("\\."));
-        jsonObject = add(jsonObject, innerKeys, value);
+        add(jsonObject, innerKeys, value);
 
         return jsonObject.toString();
     }
@@ -39,13 +39,13 @@ public class JsonParserImpl implements JsonParser {
             Object value = getJsonValue(innerKeys, jsonObject);
 
             if (value != null) {
-                resultJsonObject = add(resultJsonObject, innerKeys, value);
+                add(resultJsonObject, innerKeys, value);
             }
         }
         return resultJsonObject.toString();
     }
 
-    private JSONObject add(JSONObject currentJsonObject, List<String> innerKeys, Object value) {
+    private void add(JSONObject currentJsonObject, List<String> innerKeys, Object value) {
 
         int index = 0;
         String tempKey = innerKeys.get(index);
@@ -63,8 +63,6 @@ public class JsonParserImpl implements JsonParser {
         }
 
         currentJsonObject.put(innerKeys.get(index), value);
-
-        return currentJsonObject;
     }
 
     private Object getJsonValue(List<String> keyList, JSONObject jsonObject) {
@@ -88,4 +86,3 @@ public class JsonParserImpl implements JsonParser {
         return currentJsonObject;
     }
 }
-
