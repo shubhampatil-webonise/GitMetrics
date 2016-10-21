@@ -3,13 +3,14 @@ package org.webonise.gitmetrics.Entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class GitRepository {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
@@ -19,7 +20,6 @@ public class GitRepository {
     private String description;
 
     protected GitRepository() {
-
     }
 
     public GitRepository(String title, String description) {

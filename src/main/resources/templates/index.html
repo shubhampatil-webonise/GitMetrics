@@ -21,7 +21,7 @@
             <!--role="button">Login with-->
             <!--GitHub <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>-->
             <a class="btn btn-primary btn-lg btn-block"
-               th:href="@{'/authorize?access_token=87348c349d1ea19c78717b7bda0dac252bb6004f'}"
+               th:href="@{'/authorize?access_token=' + ${authParams}}"
                role="button">Login with
                 GitHub <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
         </div>

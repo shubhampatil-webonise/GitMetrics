@@ -5,10 +5,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.webonise.gitmetrics.Documents.Repository;
 import org.webonise.gitmetrics.Entities.GitRepository;
 import org.webonise.gitmetrics.Services.DatabaseService;
 import org.webonise.gitmetrics.Services.HttpRequestResponseService;
@@ -42,9 +42,16 @@ public class DashboardController {
         return gson.toJson(gitRepositories);
     }
 
-    @RequestMapping("/org/repos/{repo}")
-    public String getRepoDetails(@RequestParam("repo") String title, Model model) {
-        model.addAttribute("repositoryDetails", databaseService.findRepositoryDetailsByTitle(title));
-        return "repository";
+//    @RequestMapping("/org/repos/{repo}")
+//    public String getRepoDetails(@RequestParam("repo") String name, Model model) {
+//        model.addAttribute("repositoryDetails", databaseService.findRepositoryDetailsByName(name));
+//        return "repository";
+//    }
+
+    @RequestMapping("/org/repos/{name}")
+    @ResponseBody
+    public String getSomething(@PathVariable String name) {
+        List<Repository> repositories = databaseService.findRepositoryDetailsByName(name);
+        return gson.toJson(repositories);
     }
 }
