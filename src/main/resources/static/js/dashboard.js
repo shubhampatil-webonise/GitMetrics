@@ -12,6 +12,6 @@ var app = angular.module("gitmetrics", []).controller("mainController", function
             return false;
         });
     }
-    
-    $scope.getRepoList();
+
+    setInterval($scope.getRepoList, 2000);
 })
