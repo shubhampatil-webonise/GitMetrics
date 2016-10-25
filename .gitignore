@@ -1,6 +1,7 @@
+
 #java
 *.class
-
+*~
 #intellij
 .idea/
 *.ipr
@@ -8,3 +9,8 @@
 *.iml
 /out/
 target
+#Idea
+*.iml
+*.~
+/target
+.idea
