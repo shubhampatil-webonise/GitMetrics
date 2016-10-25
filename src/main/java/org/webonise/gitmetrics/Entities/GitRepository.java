@@ -14,7 +14,10 @@ public class GitRepository {
     private Long id;
 
     @Column(nullable = false)
-    private String title;
+    private String objectId;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column
     private String description;
@@ -22,21 +25,26 @@ public class GitRepository {
     protected GitRepository() {
     }
 
-    public GitRepository(String title, String description) {
-        this.title = title;
+    public GitRepository(String objectId, String name, String description) {
+        this.objectId = objectId;
+        this.name = name;
         this.description = description;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public String getObjectId() {
+        return objectId;
+    }
+
     @Override
     public String toString() {
-        return String.format("Repository [id=%d, name=%s, desc=%s]", id, title, description);
+        return String.format("Repository [id=%d, name=%s, desc=%s]", objectId, name, description);
     }
 }

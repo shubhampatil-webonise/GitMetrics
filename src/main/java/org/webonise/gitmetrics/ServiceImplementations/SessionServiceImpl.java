@@ -2,7 +2,7 @@ package org.webonise.gitmetrics.ServiceImplementations;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
-import org.webonise.springbootsessiondemo.Service.SessionService;
+import org.webonise.gitmetrics.Services.SessionService;
 
 import javax.servlet.http.HttpSession;
 

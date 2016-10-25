@@ -11,7 +11,6 @@ import org.webonise.gitmetrics.Services.SessionService;
 
 @Controller
 public class MainController {
-
     @Autowired
     private SessionService sessionService;
 
@@ -38,6 +37,7 @@ public class MainController {
             return "redirect:/dashboard";
         }
     }
+        
 
     @RequestMapping("/dashboard")
     public String renderDashboard(Model model) {

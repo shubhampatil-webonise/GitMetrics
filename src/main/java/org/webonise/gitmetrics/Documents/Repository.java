@@ -39,4 +39,8 @@ public class Repository {
         this.branches = branches;
         this.pullRequests = pullRequests;
     }
+
+    public String getId() {
+        return id;
+    }
 }

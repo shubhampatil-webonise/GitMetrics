@@ -11,4 +11,8 @@ public interface DatabaseService {
     List<GitRepository> findListOfRepositories();
 
     List<Repository> findRepositoryDetailsByName(String name);
+
+    String saveRepository(Repository repository);
+
+    void saveGitRepository(GitRepository gitRepository);
 }
