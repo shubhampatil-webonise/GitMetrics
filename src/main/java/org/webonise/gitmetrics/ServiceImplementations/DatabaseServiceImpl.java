@@ -33,4 +33,15 @@ public class DatabaseServiceImpl implements DatabaseService {
         List<Repository> repositories = repositoryCollection.findByName(name);
         return repositories;
     }
+
+    @Override
+    public String saveRepository(Repository repository) {
+        Repository repo = repositoryCollection.save(repository);
+        return repo.getId();
+    }
+
+    @Override
+    public void saveGitRepository(GitRepository gitRepository) {
+        repositoryList.save(gitRepository);
+    }
 }

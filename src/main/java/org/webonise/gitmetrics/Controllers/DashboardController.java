@@ -21,13 +21,13 @@ public class DashboardController {
     private static final Logger logger = Logger.getLogger(DashboardController.class.getName());
 
     @Autowired
-    HttpRequestResponseService httpRequestResponseService;
+    private HttpRequestResponseService httpRequestResponseService;
 
     @Autowired
-    SessionService sessionService;
+    private SessionService sessionService;
 
     @Autowired
-    Gson gson;
+    private Gson gson;
 
     @Value("${gitmetrics.org.name}")
     private String organization;
@@ -42,15 +42,9 @@ public class DashboardController {
         return gson.toJson(gitRepositories);
     }
 
-//    @RequestMapping("/org/repos/{repo}")
-//    public String getRepoDetails(@RequestParam("repo") String name, Model model) {
-//        model.addAttribute("repositoryDetails", databaseService.findRepositoryDetailsByName(name));
-//        return "repository";
-//    }
-
-    @RequestMapping("/org/repos/{name}")
+    @RequestMapping("/org/repos/{repo}")
     @ResponseBody
-    public String getSomething(@PathVariable String name) {
+    public String getSomething(@PathVariable("repo") String name) {
         List<Repository> repositories = databaseService.findRepositoryDetailsByName(name);
         return gson.toJson(repositories);
     }
