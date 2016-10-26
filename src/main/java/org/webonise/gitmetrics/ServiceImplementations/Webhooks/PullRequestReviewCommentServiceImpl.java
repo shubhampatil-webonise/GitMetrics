@@ -3,15 +3,18 @@ package org.webonise.gitmetrics.ServiceImplementations.Webhooks;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.webonise.gitmetrics.Documents.Comment;
+import org.webonise.gitmetrics.Services.DatabaseService;
 import org.webonise.gitmetrics.Services.JsonParser;
 import org.webonise.gitmetrics.Services.Webhooks.PullRequestReviewCommentService;
 import org.webonise.gitmetrics.Services.Webhooks.PullRequestService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PullRequestReviewCommentServiceImpl implements PullRequestReviewCommentService {
@@ -22,7 +25,13 @@ public class PullRequestReviewCommentServiceImpl implements PullRequestReviewCom
     private static final String DELETE_KEY = "deleted";
 
     @Autowired
-    JsonParser jsonParser;
+    private JsonParser jsonParser;
+
+    @Autowired
+    private Gson gson;
+
+    @Autowired
+    private DatabaseService databaseService;
 
     @Override
     public void actionOn(String payload) {
@@ -44,78 +53,75 @@ public class PullRequestReviewCommentServiceImpl implements PullRequestReviewCom
     }
 
     private void actionOnCreate(String payload) {
-        String reviewCommentKey = "comment";
-        String reviewCommentBody = jsonParser.parse(payload, reviewCommentKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
+        String comment = jsonParser.parse(payload, "comment");
+        long reviewId = Long.parseLong(jsonParser.parse(comment, "pull_request_review_id"));
 
-        List<String> keys = new ArrayList();
-        keys.add("id");
-        keys.add("body");
-        keys.add("created_at");
-        keys.add("updated_at");
+        List<String> keyList = new ArrayList();
+        keyList.add("id");
+        keyList.add("body");
+        keyList.add("user.login");
 
-        String requiredReviewCommentBody = jsonParser.parse(reviewCommentBody, keys);
+        comment = jsonParser.parse(comment, keyList);
 
-        String reviewUserKey = "user.login";
-        String reviewUserValue = jsonParser.parse(reviewCommentBody, reviewUserKey);
-        String reviewUser = "user";
-        requiredReviewCommentBody = jsonParser.addToJson(requiredReviewCommentBody, reviewUser, reviewUserValue);
+        String sender = jsonParser.parse(payload, "sender.login");
+        String createdAt = jsonParser.parse(payload, "comment.created_at");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String reviewIdKey = "pull_request_review_id";
-        int reviewId = Integer.parseInt(jsonParser.parse(reviewCommentBody, reviewIdKey));
+        comment = jsonParser.addToJson(comment, "createdAt", createdAt);
+        comment = jsonParser.addToJson(comment, "updatedAt", updatedAt);
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        Map<String, Object> keys = new HashMap();
+        keys.put("sender", sender);
+        keys.put("updatedAt", updatedAt);
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
-
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        Comment newComment = gson.fromJson(comment, Comment.class);
+        databaseService.addReviewCommentToReview(repositoryName, number, reviewId, newComment, keys);
     }
 
     private void actionOnEdit(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
+        String comment = jsonParser.parse(payload, "comment");
+        long reviewId = Long.parseLong(jsonParser.parse(comment, "pull_request_review_id"));
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        List<String> keyList = new ArrayList();
+        keyList.add("id");
+        keyList.add("body");
+        keyList.add("user.login");
 
-        String changesKey = "changes";
-        String changesBody = jsonParser.parse(payload, changesKey);
-        String editedKey = "comment." + new JSONObject(changesBody).keySet().iterator().next().toString();
+        comment = jsonParser.parse(comment, keyList);
 
-        String editedValue = jsonParser.parse(payload, editedKey);
+        String sender = jsonParser.parse(payload, "sender.login");
+        String createdAt = jsonParser.parse(payload, "comment.created_at");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String reviewIdKey = "comment.pull_request_review_id";
-        int reviewId = Integer.parseInt(jsonParser.parse(payload, reviewIdKey));
+        comment = jsonParser.addToJson(comment, "createdAt", createdAt);
+        comment = jsonParser.addToJson(comment, "updatedAt", updatedAt);
 
-        String commentIdKey = "comment.id";
-        int commentId = Integer.parseInt(jsonParser.parse(payload, commentIdKey));
+        Map<String, Object> keys = new HashMap();
+        keys.put("sender", sender);
+        keys.put("updatedAt", updatedAt);
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        Comment updatedComment = gson.fromJson(comment, Comment.class);
+        databaseService.editReviewCommentOnReview(repositoryName, number, reviewId, updatedComment, keys);
     }
 
     private void actionOnDelete(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
+        long reviewId = Long.parseLong(jsonParser.parse(payload, "comment.pull_request_review_id"));
+        long commentId = Long.parseLong(jsonParser.parse(payload, "comment.id"));
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        String sender = jsonParser.parse(payload, "sender.login");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String reviewIdKey = "comment.pull_request_review_id";
-        int reviewId = Integer.parseInt(jsonParser.parse(payload, reviewIdKey));
+        Map<String, Object> keys = new HashMap();
+        keys.put("sender", sender);
+        keys.put("updatedAt", updatedAt);
 
-        String commentIdKey = "comment.id";
-        int commentId = Integer.parseInt(jsonParser.parse(payload, commentIdKey));
+        databaseService.deleteReviewCommentFromReview(repositoryName, number, reviewId, commentId, keys);
     }
 }
 

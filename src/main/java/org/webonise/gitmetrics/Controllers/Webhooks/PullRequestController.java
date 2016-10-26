@@ -13,45 +13,41 @@ import org.webonise.gitmetrics.Services.Webhooks.PullRequestReviewService;
 import org.webonise.gitmetrics.Services.Webhooks.PullRequestService;
 
 @RestController
-@RequestMapping("webhooks/pullrequest")
+@RequestMapping("/webhooks/pullrequest")
 public class PullRequestController {
 
     @Autowired
-    JsonParser jsonParser;
+    private JsonParser jsonParser;
 
     @Autowired
-    PullRequestCommentService pullRequestCommentService;
+    private PullRequestCommentService pullRequestCommentService;
 
     @Autowired
-    PullRequestService pullRequestService;
+    private PullRequestService pullRequestService;
 
     @Autowired
-    PullRequestReviewService pullRequestReviewService;
+    private PullRequestReviewService pullRequestReviewService;
 
     @Autowired
-    PullRequestReviewCommentService pullRequestReviewCommentService;
+    private PullRequestReviewCommentService pullRequestReviewCommentService;
 
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    String pullRequestPayload(@RequestBody String payload) {
+    void pullRequestPayload(@RequestBody String payload) {
         pullRequestService.actionOn(payload);
-        return "ok Pull Request Webhook Controller";
     }
 
     @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    String pullRequestReviewPayload(@RequestBody String payload) {
+    void pullRequestReviewPayload(@RequestBody String payload) {
         pullRequestReviewService.actionOn(payload);
-        return "ok Pull Request Review Webhook Controller";
     }
 
     @RequestMapping(value = "/review/comment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    String pullRequestReviewCommentPayload(@RequestBody String payload) {
+    void pullRequestReviewCommentPayload(@RequestBody String payload) {
         pullRequestReviewCommentService.actionOn(payload);
-        return "ok Pull Request Review Comment Webhook Controller";
     }
 
     @RequestMapping(value = "/issue/comment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    String pullRequestCommentPayload(@RequestBody String payload) {
+    void pullRequestCommentPayload(@RequestBody String payload) {
         pullRequestCommentService.actionOn(payload);
-        return "ok Pull Request Comment Webhook Controller";
     }
 }

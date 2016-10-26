@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface RepositoryList extends CrudRepository<GitRepository, Long> {
     List<GitRepository> findAll();
+
+    void deleteGitRepositoryByName(String name);
 }

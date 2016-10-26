@@ -43,4 +43,8 @@ public class Repository {
     public String getId() {
         return id;
     }
+
+    public List<PullRequest> getPullRequests() {
+        return pullRequests;
+    }
 }
