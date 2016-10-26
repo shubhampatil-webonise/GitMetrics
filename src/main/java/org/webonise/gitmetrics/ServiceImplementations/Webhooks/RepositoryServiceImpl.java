@@ -47,9 +47,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private void actionOnDelete() {
         String repoName = gson.fromJson(payload, JsonObject.class).getAsJsonObject("repository").get("name").getAsString();
-        System.out.println(repoName);
-
-        // delete this repo from database
+        databaseService.deleteRepository(repoName);
     }
 
     private String saveRepositoryToMongo() {

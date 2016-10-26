@@ -7,11 +7,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.webonise.gitmetrics.Documents.Assignee;
+import org.webonise.gitmetrics.Documents.Label;
+import org.webonise.gitmetrics.Documents.PullRequest;
+import org.webonise.gitmetrics.Services.DatabaseService;
 import org.webonise.gitmetrics.Services.JsonParser;
 import org.webonise.gitmetrics.Services.Webhooks.PullRequestService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PullRequestServiceImpl implements PullRequestService {
@@ -25,14 +31,19 @@ public class PullRequestServiceImpl implements PullRequestService {
     private static final String UNASSIGN_VALUE = "unassigned";
     private static final String LABEL_VALUE = "labeled";
     private static final String UNLABEL_VALUE = "unlabeled";
-    private static final String PULL_REQUEST_KEY = "pull_request";
 
     @Autowired
     private JsonParser jsonParser;
 
+    @Autowired
+    private DatabaseService databaseService;
+
+    @Autowired
+    private Gson gson;
+
     @Override
     public void actionOn(String payload) {
-        String action = new Gson().fromJson(payload, JsonObject.class).get(ACTION_KEY).getAsString();
+        String action = gson.fromJson(payload, JsonObject.class).get(ACTION_KEY).getAsString();
 
         switch (action) {
             case OPEN_VALUE:
@@ -65,7 +76,8 @@ public class PullRequestServiceImpl implements PullRequestService {
     }
 
     private void actionOnOpen(String payload) {
-        String pullRequest = jsonParser.parse(payload, PULL_REQUEST_KEY);
+        String pullRequest = jsonParser.parse(payload, "pull_request");
+
         List<String> keys = new ArrayList();
         keys.add("number");
         keys.add("state");
@@ -73,77 +85,69 @@ public class PullRequestServiceImpl implements PullRequestService {
         keys.add("user.login");
         keys.add("user.type");
         keys.add("body");
-        keys.add("created_at");
-        keys.add("closed_at");
-        keys.add("updated_at");
         keys.add("assignees");
-        keys.add("head.label");
         keys.add("head.ref");
         keys.add("head.user.login");
         keys.add("head.user.type");
         keys.add("head.repo.name");
         keys.add("head.repo.owner.login");
-        keys.add("base.label");
         keys.add("base.ref");
         keys.add("base.user.login");
         keys.add("base.user.type");
         keys.add("base.repo.name");
         keys.add("base.repo.owner.login");
         keys.add("merged");
-        keys.add("merged_by");
-        keys.add("merged_at");
-        String requiredPullRequestBody = jsonParser.parse(pullRequest, keys);
 
-        JSONArray jsonArray = new JSONArray();
-        String reviewsKey = "reviews";
-        requiredPullRequestBody = jsonParser.addToJson(requiredPullRequestBody, reviewsKey, jsonArray);
+        pullRequest = jsonParser.parse(pullRequest, keys);
+        pullRequest = jsonParser.addToJson(pullRequest, "reviews", new JSONArray());
+        pullRequest = jsonParser.addToJson(pullRequest, "labels", new JSONArray());
+        pullRequest = jsonParser.addToJson(pullRequest, "comments", new JSONArray());
 
-        String labelsKey = "labels";
-        requiredPullRequestBody = jsonParser.addToJson(requiredPullRequestBody, labelsKey, jsonArray);
+        String senderLogin = jsonParser.parse(payload, "sender.login");
+        pullRequest = jsonParser.addToJson(pullRequest, "sender", senderLogin);
 
-        String commentsKey = "comments";
-        requiredPullRequestBody = jsonParser.addToJson(requiredPullRequestBody, commentsKey, jsonArray);
-        
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-        requiredPullRequestBody = jsonParser.addToJson(requiredPullRequestBody, requiredSenderKey, senderValue);
+        String mergedBy = jsonParser.parse(payload, "pull_request.merged_by");
+        String mergedAt = jsonParser.parse(payload, "pull_request.merged_at");
+        String createdAt = jsonParser.parse(payload, "pull_request.created_at");
+        String closedAt = jsonParser.parse(payload, "pull_request.closed_at");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        pullRequest = jsonParser.addToJson(pullRequest, "mergedBy", mergedBy);
+        pullRequest = jsonParser.addToJson(pullRequest, "mergedAt", mergedAt);
+        pullRequest = jsonParser.addToJson(pullRequest, "createdAt", createdAt);
+        pullRequest = jsonParser.addToJson(pullRequest, "closedAt", closedAt);
+        pullRequest = jsonParser.addToJson(pullRequest, "updatedAt", updatedAt);
+
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+
+        databaseService.savePullRequestInRepository(repositoryName, gson.fromJson(pullRequest, PullRequest.class));
     }
 
     private void actionOnClose(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        String state = jsonParser.parse(payload, "pull_request.state");
+        Boolean merged = Boolean.parseBoolean(jsonParser.parse(payload, "pull_request.merged"));
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        Map<String, Object> keys = new HashMap<>();
+        String closedAt = jsonParser.parse(payload, "pull_request.closed_at");
+        String mergedAt = jsonParser.parse(payload, "pull_request.merged_at");
+        String sender = jsonParser.parse(payload, "sender.login");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String stateKey = "pull_request.state";
-        String stateValue = jsonParser.parse(payload, stateKey);
+        keys.put("closedAt", closedAt);
+        keys.put("mergedAt", mergedAt);
+        keys.put("sender", sender);
+        keys.put("updatedAt", updatedAt);
+        keys.put("state", state);
 
-        String closedAtKey = "pull_request.closed_at";
-        String closedAt = jsonParser.parse(payload, closedAtKey);
-
-        String mergedAtKey = "pull_request.merged_at";
-        String mergedAt = jsonParser.parse(payload, mergedAtKey);
-
-        String mergedKey = "pull_request.merged";
-        String merged = jsonParser.parse(payload, mergedKey);
-        Boolean mergedValue = Boolean.parseBoolean(merged);
-        String mergedByKey = "pull_request.merged_by.login";
-        String mergedBy = null;
-        if (mergedValue) {
-            mergedBy = jsonParser.parse(payload, mergedByKey);
+        if (merged.equals(true)) {
+            String mergedBy = jsonParser.parse(payload, "pull_request.merged_by.login");
+            keys.put("merged", merged);
+            keys.put("mergedBy", mergedBy);
         }
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        databaseService.closePullRequest(repositoryName, number, keys);
     }
 
     private void actionOnReopen(String payload) {
@@ -151,107 +155,95 @@ public class PullRequestServiceImpl implements PullRequestService {
     }
 
     private void actionOnEdit(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
+        String changes = jsonParser.parse(payload, "changes");
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        String editedKey = new JSONObject(changes).keySet().iterator().next().toString();
+        String editedValue = jsonParser.parse(payload, "pull_request." + editedKey);
+        String sender = jsonParser.parse(payload, "sender.login");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String changesKey = "changes";
-        String changesBody = jsonParser.parse(payload, changesKey);
-        String editedKey = "pull_request." + new JSONObject(changesBody).keySet().iterator().next().toString();
+        Map<String, Object> keys = new HashMap();
+        keys.put(editedKey, editedValue);
+        keys.put("sender", sender);
+        keys.put("updatedAt", updatedAt);
 
-        String editedValue = jsonParser.parse(payload, editedKey);
-
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        databaseService.editPullRequest(repositoryName, number, keys);
     }
 
     private void actionOnAssign(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        List<String> keyList = new ArrayList();
+        keyList.add("assignee.login");
+        keyList.add("assignee.type");
 
-        List<String> keys = new ArrayList();
-        keys.add("assignee.login");
-        keys.add("assignee.type");
+        String assignee = jsonParser.parse(payload, keyList);
+        String sender = jsonParser.parse(payload, "sender.login");
 
-        String assignee = jsonParser.parse(payload, keys);
-        String assigneeKey = "assignee";
-        String assigneeValue = jsonParser.parse(assignee, assigneeKey);
+        assignee = jsonParser.parse(assignee, "assignee");
+        assignee = jsonParser.addToJson(assignee, "sender", sender);
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-        assigneeValue = jsonParser.addToJson(assigneeValue, requiredSenderKey, senderValue);
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        Map<String, Object> keys = new HashMap();
+        keys.put("updatedAt", updatedAt);
+        keys.put("sender", sender);
+
+        Assignee newAssignee = gson.fromJson(assignee, Assignee.class);
+        databaseService.addAssigneeInPullRequest(repositoryName, number, newAssignee, keys);
     }
 
     private void actionOnUnassign(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
+        String assigneeLogin = jsonParser.parse(payload, "assignee.login");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
+        String sender = jsonParser.parse(payload, "sender.login");
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        Map<String, Object> keys = new HashMap();
+        keys.put("updatedAt", updatedAt);
+        keys.put("sender", sender);
 
-        String assgineeLoginKey = "assignee.login";
-        String assigneeLogin = jsonParser.parse(payload, assgineeLoginKey);
-
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
-
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
+        databaseService.removeAssigneeFromPullRequest(repositoryName, number, assigneeLogin, keys);
     }
 
     private void actionOnLabel(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        List<String> keyList = new ArrayList();
+        keyList.add("label.name");
+        keyList.add("label.color");
 
-        List<String> keys = new ArrayList();
-        keys.add("label.name");
-        keys.add("label.color");
+        String label = jsonParser.parse(payload, keyList);
+        String sender = jsonParser.parse(payload, "sender.login");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
+        label = jsonParser.parse(label, "label");
+        label = jsonParser.addToJson(label, "sender", sender);
 
-        String labelJson = jsonParser.parse(payload, keys);
-        String labelKey = "label";
-        String labelValue = jsonParser.parse(labelJson, labelKey);
+        Map<String, Object> keys = new HashMap();
+        keys.put("updatedAt", updatedAt);
+        keys.put("sender", sender);
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
-        labelValue = jsonParser.addToJson(labelValue, requiredSenderKey, senderValue);
-
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        Label newLabel = gson.fromJson(label, Label.class);
+        databaseService.addLabelToPullRequest(repositoryName, number, newLabel, keys);
     }
 
     private void actionOnUnlabel(String payload) {
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
-
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
-
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
         String labelName = jsonParser.parse(payload, "label.name");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
+        String sender = jsonParser.parse(payload, "sender.login");
 
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        Map<String, Object> keys = new HashMap();
+        keys.put("updatedAt", updatedAt);
+        keys.put("sender", sender);
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
+        databaseService.removeLabelFromPullRequest(repositoryName, number, labelName, keys);
     }
 }
 

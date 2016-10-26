@@ -6,12 +6,16 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.webonise.gitmetrics.Documents.Review;
+import org.webonise.gitmetrics.Services.DatabaseService;
 import org.webonise.gitmetrics.Services.JsonParser;
 import org.webonise.gitmetrics.Services.Webhooks.PullRequestReviewService;
 import org.webonise.gitmetrics.Services.Webhooks.PullRequestService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PullRequestReviewServiceImpl implements PullRequestReviewService {
@@ -22,9 +26,15 @@ public class PullRequestReviewServiceImpl implements PullRequestReviewService {
     @Autowired
     private JsonParser jsonParser;
 
+    @Autowired
+    private Gson gson;
+
+    @Autowired
+    private DatabaseService databaseService;
+
     @Override
     public void actionOn(String payload) {
-        String action = new Gson().fromJson(payload, JsonObject.class).get(ACTION_KEY).getAsString();
+        String action = gson.fromJson(payload, JsonObject.class).get(ACTION_KEY).getAsString();
 
         switch (action) {
             case SUBMIT_VALUE:
@@ -36,31 +46,31 @@ public class PullRequestReviewServiceImpl implements PullRequestReviewService {
     }
 
     private void actionOnSubmit(String payload) {
-        String reviewKey = "review";
-        String reviewBody = jsonParser.parse(payload, reviewKey);
-        List<String> keys = new ArrayList();
-        keys.add("id");
-        keys.add("body");
-        keys.add("submitted_at");
-        String requiredReviewBody = jsonParser.parse(reviewBody, keys);
+        System.out.println("new review request");
+        String repositoryName = jsonParser.parse(payload, "repository.name");
+        int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
 
-        String reviewerKey = "user.login";
-        String reviewerValue = jsonParser.parse(reviewBody, reviewerKey);
-        String reviewer = "user";
-        requiredReviewBody = jsonParser.addToJson(requiredReviewBody, reviewer, reviewerValue);
+        String review = jsonParser.parse(payload, "review");
+        String submittedAt = jsonParser.parse(review, "submitted_at");
 
-        String repositoryNameKey = "repository.name";
-        String repositoryName = jsonParser.parse(payload, repositoryNameKey);
+        List<String> keyList = new ArrayList();
+        keyList.add("id");
+        keyList.add("body");
+        keyList.add("user.login");
 
-        String pullRequestNumberKey = "pull_request.number";
-        int number = Integer.parseInt(jsonParser.parse(payload, pullRequestNumberKey));
+        review = jsonParser.parse(review, keyList);
+        review = jsonParser.addToJson(review, "submittedAt", submittedAt);
+        review = jsonParser.addToJson(review, "comments", new JSONArray());
 
-        String senderKey = "sender.login";
-        String senderValue = jsonParser.parse(payload, senderKey);
-        String requiredSenderKey = "sender";
+        String sender = jsonParser.parse(payload, "sender.login");
+        String updatedAt = jsonParser.parse(payload, "pull_request.updated_at");
 
-        String updatedAtKey = "pull_request.updated_at";
-        String updatedAt = jsonParser.parse(payload, updatedAtKey);
+        Map<String, Object> keys = new HashMap();
+        keys.put("sender", sender);
+        keys.put("updatedAt", updatedAt);
+
+        Review newReview = gson.fromJson(review, Review.class);
+        databaseService.addReviewToPullRequest(repositoryName, number, newReview, keys);
     }
 }
 

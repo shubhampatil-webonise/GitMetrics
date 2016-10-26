@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface RepositoryCollection extends MongoRepository<Repository, String> {
     List<Repository> findByName(String name);
+
+    void deleteRepositoryByName(String name);
 }

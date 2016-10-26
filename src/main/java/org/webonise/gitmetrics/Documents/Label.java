@@ -7,4 +7,8 @@ public class Label {
     String name;
     String color;
     String sender;
+
+    public String getName() {
+        return name;
+    }
 }

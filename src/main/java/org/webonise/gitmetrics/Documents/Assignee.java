@@ -7,4 +7,8 @@ public class Assignee {
     public String login;
     public String type;
     public String sender;
+
+    public String getLogin() {
+        return login;
+    }
 }
