@@ -51,4 +51,8 @@ public class Repository {
     public List<Branch> getBranches() {
         return branches;
     }
+
+    public List<Collaborator> getCollaborators() {
+        return collaborators;
+    }
 }
