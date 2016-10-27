@@ -47,4 +47,8 @@ public class Repository {
     public List<PullRequest> getPullRequests() {
         return pullRequests;
     }
+
+    public List<Branch> getBranches() {
+        return branches;
+    }
 }

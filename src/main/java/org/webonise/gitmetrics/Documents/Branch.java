@@ -8,4 +8,8 @@ public class Branch {
     public String sender;
     public Boolean stale;
     public Boolean mailSent;
+
+    public String getRef() {
+        return ref;
+    }
 }
