@@ -3,6 +3,7 @@ package org.webonise.gitmetrics.Services;
 import org.springframework.stereotype.Service;
 import org.webonise.gitmetrics.Documents.Assignee;
 import org.webonise.gitmetrics.Documents.Branch;
+import org.webonise.gitmetrics.Documents.Collaborator;
 import org.webonise.gitmetrics.Documents.Comment;
 import org.webonise.gitmetrics.Documents.Label;
 import org.webonise.gitmetrics.Documents.PullRequest;
@@ -56,4 +57,6 @@ public interface DatabaseService {
     void addBranchToRepository(String repositoryName, Branch branch);
 
     void deleteBranchFromRepository(String repository, String ref);
+
+    void addCollaboratorToRepository(String repository, Collaborator collaboratorObj);
 }

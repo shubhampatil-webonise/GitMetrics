@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.Documents.Assignee;
 import org.webonise.gitmetrics.Documents.Branch;
+import org.webonise.gitmetrics.Documents.Collaborator;
 import org.webonise.gitmetrics.Documents.Comment;
 import org.webonise.gitmetrics.Documents.Label;
 import org.webonise.gitmetrics.Documents.PullRequest;
@@ -468,7 +469,7 @@ public class DatabaseServiceImpl implements DatabaseService {
     @Override
     public void deleteBranchFromRepository(String repositoryName, String ref) {
         List<Repository> repositories = repositoryCollection.findByName(repositoryName);
-        
+
         for (Repository repository : repositories) {
             Iterator<Branch> iterator = repository.getBranches().iterator();
             while (iterator.hasNext()) {
@@ -477,6 +478,16 @@ public class DatabaseServiceImpl implements DatabaseService {
                     iterator.remove();
                 }
             }
+        }
+        repositoryCollection.save(repositories);
+    }
+
+    @Override
+    public void addCollaboratorToRepository(String repository, Collaborator collaborator) {
+        List<Repository> repositories = repositoryCollection.findByName(repository);
+
+        for (Repository repositoryObj : repositories) {
+            repositoryObj.getCollaborators().add(collaborator);
         }
         repositoryCollection.save(repositories);
     }
