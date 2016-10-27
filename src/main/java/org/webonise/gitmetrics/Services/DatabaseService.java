@@ -2,6 +2,7 @@ package org.webonise.gitmetrics.Services;
 
 import org.springframework.stereotype.Service;
 import org.webonise.gitmetrics.Documents.Assignee;
+import org.webonise.gitmetrics.Documents.Branch;
 import org.webonise.gitmetrics.Documents.Comment;
 import org.webonise.gitmetrics.Documents.Label;
 import org.webonise.gitmetrics.Documents.PullRequest;
@@ -51,4 +52,8 @@ public interface DatabaseService {
     void editReviewCommentOnReview(String repositoryName, int pullRequestNumber, long reviewId, Comment updatedComment, Map<String, Object> updateKeys);
 
     void deleteReviewCommentFromReview(String repositoryName, int pullRequestNumber, long reviewId, long commentId, Map<String, Object> updateKeys);
+
+    void addBranchToRepository(String repositoryName, Branch branch);
+
+    void deleteBranchFromRepository(String repository, String ref);
 }

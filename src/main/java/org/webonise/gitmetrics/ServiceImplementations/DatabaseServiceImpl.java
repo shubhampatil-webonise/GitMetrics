@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.Documents.Assignee;
+import org.webonise.gitmetrics.Documents.Branch;
 import org.webonise.gitmetrics.Documents.Comment;
 import org.webonise.gitmetrics.Documents.Label;
 import org.webonise.gitmetrics.Documents.PullRequest;
@@ -451,6 +452,32 @@ public class DatabaseServiceImpl implements DatabaseService {
             }
         }
 
+        repositoryCollection.save(repositories);
+    }
+
+    @Override
+    public void addBranchToRepository(String repositoryName, Branch branch) {
+        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+
+        for (Repository repository : repositories) {
+            repository.getBranches().add(branch);
+        }
+        repositoryCollection.save(repositories);
+    }
+
+    @Override
+    public void deleteBranchFromRepository(String repositoryName, String ref) {
+        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        
+        for (Repository repository : repositories) {
+            Iterator<Branch> iterator = repository.getBranches().iterator();
+            while (iterator.hasNext()) {
+                Branch branch = iterator.next();
+                if (branch.getRef().equalsIgnoreCase(ref)) {
+                    iterator.remove();
+                }
+            }
+        }
         repositoryCollection.save(repositories);
     }
 }
