@@ -9,6 +9,14 @@ public class Branch {
     public Boolean stale;
     public Boolean mailSent;
 
+    public void setStale(Boolean stale) {
+        this.stale = stale;
+    }
+
+    public void setMailSent(Boolean mailSent) {
+        this.mailSent = mailSent;
+    }
+
     public String getRef() {
         return ref;
     }

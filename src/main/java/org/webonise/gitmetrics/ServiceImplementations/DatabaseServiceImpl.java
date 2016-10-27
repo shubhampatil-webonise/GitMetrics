@@ -16,6 +16,8 @@ import org.webonise.gitmetrics.Entities.GitRepository;
 import org.webonise.gitmetrics.Repositories.RepositoryCollection;
 import org.webonise.gitmetrics.Repositories.RepositoryList;
 import org.webonise.gitmetrics.Services.DatabaseService;
+import org.webonise.gitmetrics.Utilities.RepositoryDetails;
+import org.webonise.gitmetrics.Utilities.StaleBranch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -483,11 +485,71 @@ public class DatabaseServiceImpl implements DatabaseService {
     }
 
     @Override
-    public void addCollaboratorToRepository(String repository, Collaborator collaborator) {
-        List<Repository> repositories = repositoryCollection.findByName(repository);
+    public void addCollaboratorToRepository(String repositoryName, Collaborator collaborator) {
+        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        for (Repository repository : repositories) {
+            for (Repository repositoryObj : repositories) {
+                repositoryObj.getCollaborators().add(collaborator);
+            }
+            repositoryCollection.save(repositories);
+        }
+    }
 
-        for (Repository repositoryObj : repositories) {
-            repositoryObj.getCollaborators().add(collaborator);
+    @Override
+    public boolean getMailSentValue(String repositoryName, String ref) {
+        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+
+        for (Repository repository : repositories) {
+            List<Branch> branchList = repository.getBranches();
+            for (Branch branch : branchList) {
+                if (branch.getRef().equalsIgnoreCase(ref)) {
+                    return branch.mailSent;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void updateStaleValue(String repositoryName, StaleBranch staleBranch) {
+        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+
+        for (Repository repository : repositories) {
+            List<Branch> branchList = repository.getBranches();
+            for (Branch branch : branchList) {
+                if (branch.getRef().equalsIgnoreCase(staleBranch.getName())) {
+                    branch.setStale(true);
+                }
+            }
+        }
+        repositoryCollection.save(repositories);
+    }
+
+    @Override
+    public List<RepositoryDetails> getRepositoryDetails() {
+        List<RepositoryDetails> repositoryList = new ArrayList<>();
+        List<Repository> repositories = repositoryCollection.findAll();
+
+        for (Repository repository : repositories) {
+            RepositoryDetails repo = new RepositoryDetails();
+            repo.setName(repository.getName());
+            repo.setOwner(repository.getOwner().login);
+            repositoryList.add(repo);
+        }
+        return repositoryList;
+    }
+
+    @Override
+    public void updateMailSentValue(String repositoryName, StaleBranch staleBranch) {
+        List<Repository> repositories = repositoryCollection.findAll();
+
+        for (Repository repository : repositories) {
+            List<Branch> branchList = repository.getBranches();
+            for (Branch branch : branchList) {
+                if (branch.getRef().equalsIgnoreCase(staleBranch.getName())) {
+                    branch.setMailSent(true);
+                }
+            }
         }
         repositoryCollection.save(repositories);
     }
