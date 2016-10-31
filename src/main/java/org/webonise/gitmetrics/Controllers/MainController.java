@@ -37,7 +37,7 @@ public class MainController {
             return "redirect:/dashboard";
         }
     }
-        
+
 
     @RequestMapping("/dashboard")
     public String renderDashboard(Model model) {

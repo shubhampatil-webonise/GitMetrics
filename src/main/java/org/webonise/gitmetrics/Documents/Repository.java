@@ -23,7 +23,20 @@ public class Repository {
     public List<Branch> branches;
     public List<PullRequest> pullRequests;
 
+    public Owner getOwner() {
+        return owner;
+    }
+
     protected Repository() {
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSender() {
+        return sender;
     }
 
     public Repository(String name, String description, String sender, String createdAt, String updatedAt, String url, Boolean privateRepo, Owner owner, List<Collaborator> collaborators, List<Branch> branches, List<PullRequest> pullRequests) {
@@ -33,10 +46,12 @@ public class Repository {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.url = url;
+
         this.privateRepo = privateRepo;
         this.owner = owner;
         this.collaborators = collaborators;
         this.branches = branches;
+
         this.pullRequests = pullRequests;
     }
 
