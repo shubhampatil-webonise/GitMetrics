@@ -18,7 +18,7 @@ import java.util.Map;
 public interface DatabaseService {
     List<GitRepository> findListOfRepositories();
 
-    List<Repository> findRepositoryDetailsByName(String name);
+    Repository findRepositoryDetailsByName(String name);
 
     String saveRepository(Repository repository);
 

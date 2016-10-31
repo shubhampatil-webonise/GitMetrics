@@ -45,6 +45,12 @@ public class MainController {
         return "dashboard";
     }
 
+    @RequestMapping("/dashboard/{repo}")
+    public String renderRepositoryDetails(Model model) {
+        model.addAttribute("organization", organization);
+        return "repository";
+    }
+
     @RequestMapping("/logout")
     public String logOut() {
         sessionService.clear();
