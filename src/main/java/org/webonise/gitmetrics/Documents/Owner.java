@@ -7,4 +7,8 @@ public class Owner {
     public String login;
     public String type;
     public String url;
+
+    public String getLogin() {
+        return login;
+    }
 }

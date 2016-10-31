@@ -1,9 +1,93 @@
-<html>
+<!doctype html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" ng-app="gitmetrics">
 <head>
-    <title>GitMetrics - Repository</title>
+    <title>GitMetrics</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/repository.css}"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/css/font-awesome.min.css"/>
+    
+    <script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
 </head>
 
-<body>
-<h1>This is a repository</h1>
+<body ng-controller="mainController">
+    <header>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li><h3 th:text="${organization}"></h3></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout" class="btn btn-primary navbar-btn" role="button">Log Out</a></li>
+                </ul>
+            </div>
+        </nav>        
+    </header>
+    
+<!--    {{repository}}-->
+    
+    <section class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li role="presentation" class="active"><a href="#repoDetails" aria-controls="repoDetails"  role="tab" data-toggle="pill">Repository Details</a></li>
+                        <li role="presentation"><a href="#repoPullRequests" aria-controls="repoPullRequests"  role="tab" data-toggle="pill">Pull Requests</a></li>
+                        <li role="presentation"><a href="#repoBranches" aria-controls="repoBranches"  role="tab" data-toggle="pill">Branches</a></li>
+                        <li role="presentation"><a href="#repoCollaborators" aria-controls="repoCollaborators"  role="tab" data-toggle="pill">Collaborators</a></li>
+                    </ul>
+                </div>
+
+                <div class="tab-content col-md-offset-2">
+                    <div role="tabpanel" class="tab-pane active fade in" id="repoDetails">
+                        <div class="jumbotron">
+                            <p>{{repository.name}}</p>
+                            <p>{{repository.description}}</p>
+                            <p>{{repository.sender}}</p>
+                            <p>{{repository.createdAt}}</p>
+                            <p>{{repository.updatedAt}}</p>
+                            <p>{{repository.url}}</p>
+                            <p>{{repository.privateRepo}}</p>
+                            <p>{{repository.owner}}</p>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane active fade" id="repoPullRequests">
+                        <div class="panel panel-primary" ng-repeat="pr in repository.pullRequests">
+                            <div class="panel-heading">PR #{{pr.number}} : {{pr.title}}</div>
+                            <div class="panel-body">
+                                <p>{{pr.body}}</p>
+                                <p>{{pr.merged}}</p>
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane active fade" id="repoBranches">
+                        <div class="panel panel-primary" ng-repeat="branch in repository.branches">
+                            <div class="panel-heading">Branch : {{branch.ref}}</div>
+                            <div class="panel-body">
+                                <p>Created By : {{branch.sender}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane active fade" id="repoCollaborators">
+                        <div class="panel panel-primary" ng-repeat="collaborator in repository.collaborators">
+                            <div class="panel-heading">Login : {{collaborator.login}}</div>
+                            <div class="panel-body"> Type : {{collaborator.type}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:src="@{/js/repository.js}"></script>
 </body>
 </html>

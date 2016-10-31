@@ -1,5 +1,6 @@
 package org.webonise.gitmetrics.Documents;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -10,7 +11,10 @@ public class Repository {
 
     @Id
     public String id;
+
+    @Indexed(unique = true)
     public String name;
+
     public String description;
     public String sender;
     public String createdAt;
