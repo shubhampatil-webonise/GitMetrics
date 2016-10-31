@@ -153,9 +153,7 @@ public class DatabaseServiceImpl implements DatabaseService {
     @Override
     public void addLabelToPullRequest(String repositoryName, int pullRequestNumber, Label label, Map<String, Object> updateKeys) {
         Repository repository = repositoryCollection.findByName(repositoryName);
-
         List<PullRequest> pullRequests = repository.getPullRequests();
-
         for (PullRequest pullRequest : pullRequests) {
             if (pullRequest.getNumber() == pullRequestNumber) {
                 for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
@@ -338,7 +336,6 @@ public class DatabaseServiceImpl implements DatabaseService {
                         logger.error(e.getMessage());
                     }
                 }
-
                 boolean isAlreadyPresent = false;
 
                 for (Review currentReview : pullRequest.getReviews()) {
@@ -491,7 +488,6 @@ public class DatabaseServiceImpl implements DatabaseService {
                 branch.setMailSent(true);
             }
         }
-
         repositoryCollection.save(repository);
     }
 }
