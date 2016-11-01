@@ -25,7 +25,7 @@ public class StaleBranchNotificationMailer {
     private EmailService emailService;
 
 
-    @Scheduled(cron = " 15 * * * * *")
+    @Scheduled(cron = " 30 * * * * *")
     public void task() {
         Set<StaleBranch> staleBranches;
         List<GitRepository> repositoryList;

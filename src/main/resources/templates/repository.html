@@ -44,14 +44,16 @@
                 <div class="tab-content col-md-offset-2">
                     <div role="tabpanel" class="tab-pane active fade in" id="repoDetails">
                         <div class="jumbotron">
-                            <p>{{repository.name}}</p>
-                            <p>{{repository.description}}</p>
-                            <p>{{repository.sender}}</p>
-                            <p>{{repository.createdAt}}</p>
-                            <p>{{repository.updatedAt}}</p>
-                            <p>{{repository.url}}</p>
-                            <p>{{repository.privateRepo}}</p>
-                            <p>{{repository.owner}}</p>
+                            <p><span>Name:</span><span class="attribute">{{repository.name}}</span></p>
+                            <p><span>Description:</span><span class="attribute">{{repository.description}}</span></p>
+                            <p><span>Sender:</span><span class="attribute">{{repository.sender}}</span></p>
+                            <p><span>Created At:</span><span class="attribute">{{repository.createdAt}}</span></p>
+                            <p><span>Updated At:</span><span class="attribute">{{repository.updatedAt}}</span></p>
+                            <p><span>Url:</span><span class="attribute">{{repository.url}}</span></p>
+                            <p><span>Private Repository:</span><span class="attribute">{{repository.privateRepo}}</span></p>
+                            <p><span>Owner Login:</span><span class="attribute">{{repository.owner.login}}</span></p>
+                            <p><span>Owner Type:</span><span class="attribute">{{repository.owner.type}}</span></p>
+                            <p><span>Owner Url:</span><span class="attribute">{{repository.owner.url}}</span></p>
                         </div>
                     </div>
 
@@ -59,10 +61,45 @@
                         <div class="panel panel-primary" ng-repeat="pr in repository.pullRequests">
                             <div class="panel-heading">PR #{{pr.number}} : {{pr.title}}</div>
                             <div class="panel-body">
-                                <p>{{pr.body}}</p>
-                                <p>{{pr.merged}}</p>
-                            
-                            </div>
+                                <p><span>Body:</span><span class="attribute">{{pr.body}}</span></p>
+                                <p></p>
+                                 <p><span>State:</span><span class="attribute">{{pr.state}}</span></p>
+                                <p></p>
+                                <p><span>Created At:</span><span class="attribute">{{pr.createdAt}}</span></p>
+                                <p></p>
+                                <p><span>Closed At:</span><span class="attribute">{{pr.closedAt}}</span></p>
+                                <p></p>
+                                <p><span>Updated At:</span><span class="attribute">{{pr.updatedAt}}</span></p>
+                                <p></p>
+                                <p><span>Merged Status:</span><span class="attribute">{{pr.merged}}</span></p>
+                                <p></p>
+                                <p><span>Merged At:</span><span class="attribute">{{pr.mergedAt}}</span></p>
+                                <p></p>
+                                <p><span>Merged By:</span><span class="attribute">{{pr.mergedBy}}</span></p>
+                                <p></p>
+                                <p><span>Sender:</span><span class="attribute">{{pr.sender}}</span></p>
+                                <p></p>
+                                <p><span>User Login:</span><span class="attribute">{{pr.user.login}}</span></p>
+                                <p></p>
+                                <p><span>User Type:</span><span class="attribute">{{pr.user.type}}</span></p>
+                                <p></p>
+                                <p><span>Head Ref:</span><span class="attribute">{{pr.head.ref}}</span></p>
+                                <p></p>
+                                <p><span>Head User Login:</span><span class="attribute">{{pr.head.user.login}}</span></p>
+                                <p><span>Head User Type:</span><span class="attribute">{{pr.head.user.type}}</span></p>
+                                <p><span>Head Repo Name:</span><span class="attribute">{{pr.head.repo.name}}</span></p>
+                                <p><span>Head Repo Owner Login:</span><span class="attribute">{{pr.head.repo.owner.login}}</span></p>
+                                <p><span>Base Ref:</span><span class="attribute">{{pr.base.ref}}</span></p>
+                                <p></p>
+                                <p><span>Base User Login:</span><span class="attribute">{{pr.base.user.login}}</span></p>
+                                <p><span>Base User Type:</span><span class="attribute">{{pr.base.user.type}}</span></p>
+                                <p><span>Base Repo Name:</span><span class="attribute">{{pr.base.repo.name}}</span></p>
+                                <p><span>Base Repo Owner Login:</span><span class="attribute">{{pr.base.repo.owner.login}}</span></p>
+                                <p>{{pr.assignees}}</p>
+                                <p>{{pr.labels}}</p>
+                                <p>{{pr.comments}}</p>
+                                <p>{{pr.reviews}}</p>
+                             </div>
                         </div>
                     </div>
 
@@ -70,15 +107,19 @@
                         <div class="panel panel-primary" ng-repeat="branch in repository.branches">
                             <div class="panel-heading">Branch : {{branch.ref}}</div>
                             <div class="panel-body">
-                                <p>Created By : {{branch.sender}}</p>
+                                <p><span>Created By:</span><span class="attribute">{{branch.sender}}</span></p>
+                                 <p><span>Stale Status:</span><span class="attribute">{{branch.stale}}</span></p>
+                                 <p><span>Mail Send Status:</span><span class="attribute">{{branch.mailSent}}</span></p>
                             </div>
                         </div>
                     </div>
 
                     <div role="tabpanel" class="tab-pane active fade" id="repoCollaborators">
                         <div class="panel panel-primary" ng-repeat="collaborator in repository.collaborators">
-                            <div class="panel-heading">Login : {{collaborator.login}}</div>
-                            <div class="panel-body"> Type : {{collaborator.type}}</div>
+                            <div class="panel-body">
+                             <p><span>Collaborator Login:</span><span class="attribute">{{collaborator.login}}</span></p>
+                             <p><span>Collaborator Type:</span><span class="attribute">{{collaborator.type}}</span></p>    
+                             </div>
                         </div>
                     </div>
                 </div>
