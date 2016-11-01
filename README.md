@@ -1,15 +1,33 @@
-# GitMetrics
+# What is GitMetrics
 A web application for managing organization and repository metrics using GitHub APIs and Spring Boot
+### WebHooks
+* Webhooks are used to record any change and store it in the database.
+* Webhooks have been used to record these events:-
+* When a new repository is created or deleted
+* When a pull request is opened, closed, reopened, edited, assigned or unassigned
+* When a pull request review is submitted
+* When a pull request review is created, edited or deleted
+* When a pull request comment is created,edited or deleted
+* When a collaborator is added
+* When a branch is created or deleted.
+### Database
+* Uses MongoDB to store Repository Details which includes PR,Collaborators and branches.
+* Uses SQL to store Repository name and description.
 
-Module : OAuth
 
-Instructions to install:
+### Environment Variable 
+* ClientId and Client Secret obtained after registering the app are stored in environment variables
 
-1) Download the source code and open in Intellij/Eclipse
-2) Configure a maven project using pom.xml
-3) Use ngrok to tunnel localhost to internet
-4) Run Main.java
-5) Open browser and go to <ngrok-url>
-6) Login with your Github accont to test this OAuth Module
 
-Check pom.xml from dependencies
+### Run GitMetrics
+* Download the source code and open in Intellij/Eclipse
+* Configure a maven project using pom.xml
+* Use ngrok to tunnel localhost to internet
+* Run Main.java
+* Open browser and go to `<ngrok-url>`
+* Login with your Github account.
+
+    
+
+
+
