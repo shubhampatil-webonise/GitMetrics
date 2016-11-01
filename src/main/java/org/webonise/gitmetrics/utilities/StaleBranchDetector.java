@@ -1,6 +1,5 @@
 package org.webonise.gitmetrics.utilities;
 
-import okhttp3.OkHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,7 @@ import java.util.Set;
 @Component
 public class StaleBranchDetector {
     @Autowired
-    private OkHttpClient client;
-
-    @Autowired
-    JsonParser parser;
+    JsonParser jsonParser;
 
     @Autowired
     HttpRequestResponseService httpRequestResponseService;
@@ -100,11 +96,11 @@ public class StaleBranchDetector {
 
         StaleBranch staleBranch = new StaleBranch();
         staleBranch.setName(object.getString(NAME));
-        String url = parser.parse(object.toString(), COMMIT_URL);
+        String url = jsonParser.parse(object.toString(), COMMIT_URL);
         String responseObject = httpRequestResponseService.get(url, headers);
-        staleBranch.setDate(parser.parse(responseObject, COMMIT_DATE));
-        staleBranch.setLast_committer(parser.parse(responseObject, COMMITTTER_NAME));
-        staleBranch.setEmail(parser.parse(responseObject, EMAIL));
+        staleBranch.setDate(jsonParser.parse(responseObject, COMMIT_DATE));
+        staleBranch.setLast_committer(jsonParser.parse(responseObject, COMMITTTER_NAME));
+        staleBranch.setEmail(jsonParser.parse(responseObject, EMAIL));
         return staleBranch;
     }
 
@@ -118,10 +114,10 @@ public class StaleBranchDetector {
         if (getDateDifference(date) >= staleTime) {
             for (int i = 0; i < jsonPRArray.length(); i++) {
                 JSONObject object = jsonPRArray.getJSONObject(i);
-                String prDetails = httpRequestResponseService.get(parser.parse(object.toString(), PR_URL), headers);
-                mergeStatus = parser.parse(prDetails, MERGE_STATUS);
+                String prDetails = httpRequestResponseService.get(jsonParser.parse(object.toString(), PR_URL), headers);
+                mergeStatus = jsonParser.parse(prDetails, MERGE_STATUS);
                 state = object.getString(STATE);
-                fromBranch = parser.parse(object.toString(), HEAD);
+                fromBranch = jsonParser.parse(object.toString(), HEAD);
                 if (branch.equalsIgnoreCase(fromBranch) && mergeStatus != null && state.equalsIgnoreCase("closed")) {
                     return true;
                 }

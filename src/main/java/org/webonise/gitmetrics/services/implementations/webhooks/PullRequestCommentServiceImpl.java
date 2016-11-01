@@ -47,7 +47,7 @@ public class PullRequestCommentServiceImpl implements PullRequestCommentService 
                 actionOnDelete(payload);
                 break;
             default:
-                logger.trace("No Valid Action Found In Payload:\n" + payload);
+                logger.error("No Valid Action Found In Payload:\n" + payload);
         }
     }
 

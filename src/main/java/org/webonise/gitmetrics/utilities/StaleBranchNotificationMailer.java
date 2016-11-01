@@ -1,5 +1,6 @@
 package org.webonise.gitmetrics.utilities;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,8 @@ import java.util.Set;
 
 @Component
 public class StaleBranchNotificationMailer {
+    private static final Logger logger = Logger.getLogger(StaleBranchNotificationMailer.class);
+
     @Autowired
     private StaleBranchDetector staleBranchDetector;
 
@@ -38,7 +41,7 @@ public class StaleBranchNotificationMailer {
                 Iterator<StaleBranch> iterator = staleBranches.iterator();
                 while (iterator.hasNext()) {
                     StaleBranch staleBranch = iterator.next();
-                    emailService.send(staleBranch.getEmail(), staleBranch.getName());
+                    emailService.send(staleBranch.getEmail(), staleBranch.getName(), "Stale Branch in " + repository.getName());
                     databaseService.updateMailSent(repository.getName(), staleBranch.getName());
                 }
             }

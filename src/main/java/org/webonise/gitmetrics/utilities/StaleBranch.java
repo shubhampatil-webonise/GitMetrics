@@ -1,5 +1,7 @@
 package org.webonise.gitmetrics.utilities;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,5 +43,29 @@ public class StaleBranch {
         this.last_committer = last_committer;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (!(o instanceof StaleBranch)) return false;
+
+        StaleBranch that = (StaleBranch) o;
+
+        return new EqualsBuilder()
+                .append(name, that.name)
+                .append(last_committer, that.last_committer)
+                .append(date, that.date)
+                .append(email, that.email)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(name)
+                .append(last_committer)
+                .append(date)
+                .append(email)
+                .toHashCode();
+    }
 }

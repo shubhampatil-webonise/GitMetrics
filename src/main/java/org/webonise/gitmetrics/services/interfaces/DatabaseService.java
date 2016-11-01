@@ -63,8 +63,6 @@ public interface DatabaseService {
     boolean getMailSent(String repositoryName, String branchName);
 
     void updateStale(String repositoryName, String branchName);
-
-    // List<RepositoryDetails> getRepositoryDetails();
-
+    
     void updateMailSent(String repositoryName, String branchName);
 }

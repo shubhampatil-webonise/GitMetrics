@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Component
 public class PullRequestReviewServiceImpl implements PullRequestReviewService {
-    private static final Logger logger = Logger.getLogger(PullRequestService.class.getName());
+    private static final Logger logger = Logger.getLogger(PullRequestService.class);
     private static final String ACTION_KEY = "action";
     private static final String SUBMIT_VALUE = "submitted";
 

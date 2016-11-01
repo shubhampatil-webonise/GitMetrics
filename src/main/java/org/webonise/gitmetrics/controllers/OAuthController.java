@@ -19,7 +19,7 @@ import java.util.Map;
 @Controller
 public class OAuthController {
 
-    private static final Logger logger = Logger.getLogger(OAuthController.class.getName());
+    private static final Logger logger = Logger.getLogger(OAuthController.class);
 
     @Autowired
     private SessionService sessionService;
@@ -50,7 +50,7 @@ public class OAuthController {
             String response = httpRequestResponseService.post("https://github.com/login/oauth/access_token", requestBody);
             return "redirect:/authorize?" + response;
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getStackTrace());
         }
 
         redirectAttributes.addAttribute("loginFailed", true);
