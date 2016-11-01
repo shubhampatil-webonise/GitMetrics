@@ -16,8 +16,6 @@ import org.webonise.gitmetrics.Entities.GitRepository;
 import org.webonise.gitmetrics.Repositories.RepositoryCollection;
 import org.webonise.gitmetrics.Repositories.RepositoryList;
 import org.webonise.gitmetrics.Services.DatabaseService;
-import org.webonise.gitmetrics.Utilities.RepositoryDetails;
-import org.webonise.gitmetrics.Utilities.StaleBranch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,9 +42,9 @@ public class DatabaseServiceImpl implements DatabaseService {
     }
 
     @Override
-    public List<Repository> findRepositoryDetailsByName(String name) {
-        List<Repository> repositories = repositoryCollection.findByName(name);
-        return repositories;
+    public Repository findRepositoryDetailsByName(String name) {
+        Repository repository = repositoryCollection.findByName(name);
+        return repository;
     }
 
     @Override
@@ -68,36 +66,30 @@ public class DatabaseServiceImpl implements DatabaseService {
 
     @Override
     public void savePullRequestInRepository(String repositoryName, PullRequest pullRequest) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
-
-        for (Repository repository : repositories) {
-            repository.getPullRequests().add(pullRequest);
-        }
-
-        repositoryCollection.save(repositories);
+        Repository repository = repositoryCollection.findByName(repositoryName);
+        repository.getPullRequests().add(pullRequest);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void closePullRequest(String repositoryName, int pullRequestNumber, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
@@ -107,309 +99,286 @@ public class DatabaseServiceImpl implements DatabaseService {
 
     @Override
     public void addAssigneeInPullRequest(String repositoryName, int pullRequestNumber, Assignee assignee, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
-
-                    pullRequest.getAssignees().add(assignee);
                 }
+
+                pullRequest.getAssignees().add(assignee);
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void removeAssigneeFromPullRequest(String repositoryName, int pullRequestNumber, String assigneeLogin, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    Iterator iterator = pullRequest.getAssignees().iterator();
+                Iterator iterator = pullRequest.getAssignees().iterator();
 
-                    while (iterator.hasNext()) {
-                        Assignee assignee = (Assignee) iterator.next();
-                        if (assignee.getLogin().equals(assigneeLogin)) {
-                            iterator.remove();
-                        }
+                while (iterator.hasNext()) {
+                    Assignee assignee = (Assignee) iterator.next();
+                    if (assignee.getLogin().equals(assigneeLogin)) {
+                        iterator.remove();
                     }
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void addLabelToPullRequest(String repositoryName, int pullRequestNumber, Label label, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
-
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
-
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        Repository repository = repositoryCollection.findByName(repositoryName);
+        List<PullRequest> pullRequests = repository.getPullRequests();
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
-
-                    pullRequest.getLabels().add(label);
                 }
+
+                pullRequest.getLabels().add(label);
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void removeLabelFromPullRequest(String repositoryName, int pullRequestNumber, String labelName, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    Iterator iterator = pullRequest.getLabels().iterator();
+                Iterator iterator = pullRequest.getLabels().iterator();
 
-                    while (iterator.hasNext()) {
-                        Label label = (Label) iterator.next();
-                        if (label.getName().equals(labelName)) {
-                            iterator.remove();
-                        }
+                while (iterator.hasNext()) {
+                    Label label = (Label) iterator.next();
+                    if (label.getName().equals(labelName)) {
+                        iterator.remove();
                     }
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void addCommentOnPullRequest(String repositoryName, int pullRequestNumber, Comment comment, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
-
-                    pullRequest.getComments().add(comment);
                 }
+
+                pullRequest.getComments().add(comment);
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void removeCommentFromPullRequest(String repositoryName, int pullRequestNumber, long commentId, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    Iterator iterator = pullRequest.getComments().iterator();
+                Iterator iterator = pullRequest.getComments().iterator();
 
-                    while (iterator.hasNext()) {
-                        Comment comment = (Comment) iterator.next();
-                        if (comment.getId() == commentId) {
-                            iterator.remove();
-                        }
+                while (iterator.hasNext()) {
+                    Comment comment = (Comment) iterator.next();
+                    if (comment.getId() == commentId) {
+                        iterator.remove();
                     }
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void editCommentOnPullRequest(String repositoryName, int pullRequestNumber, long commentId, String updatedComment, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    Iterator iterator = pullRequest.getComments().iterator();
+                Iterator iterator = pullRequest.getComments().iterator();
 
-                    while (iterator.hasNext()) {
-                        Comment comment = (Comment) iterator.next();
-                        if (comment.getId() == commentId) {
-                            comment.setBody(updatedComment);
-                        }
+                while (iterator.hasNext()) {
+                    Comment comment = (Comment) iterator.next();
+                    if (comment.getId() == commentId) {
+                        comment.setBody(updatedComment);
                     }
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void addReviewToPullRequest(String repositoryName, int pullRequestNumber, Review review, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    boolean isAlreadyPresent = false;
+                boolean isAlreadyPresent = false;
 
-                    for (Review currentReview : pullRequest.getReviews()) {
-                        if (currentReview.getId() == review.getId()) {
-                            currentReview.setBody(review.getBody());
-                            currentReview.setUser(review.getUser());
-                            currentReview.setSubmittedAt(review.getSubmittedAt());
+                for (Review currentReview : pullRequest.getReviews()) {
+                    if (currentReview.getId() == review.getId()) {
+                        currentReview.setBody(review.getBody());
+                        currentReview.setUser(review.getUser());
+                        currentReview.setSubmittedAt(review.getSubmittedAt());
 //                            currentReview.setComments(review.getComments());
-                            isAlreadyPresent = true;
-                        }
+                        isAlreadyPresent = true;
                     }
+                }
 
-                    if (!isAlreadyPresent) {
-                        pullRequest.getReviews().add(review);
-                    }
+                if (!isAlreadyPresent) {
+                    pullRequest.getReviews().add(review);
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void addReviewCommentToReview(String repositoryName, int pullRequestNumber, long reviewId, Comment comment, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
+                boolean isAlreadyPresent = false;
 
-                    boolean isAlreadyPresent = false;
-
-                    for (Review currentReview : pullRequest.getReviews()) {
-                        if (currentReview.getId() == reviewId) {
-                            currentReview.getComments().add(comment);
-                            isAlreadyPresent = true;
-                        }
+                for (Review currentReview : pullRequest.getReviews()) {
+                    if (currentReview.getId() == reviewId) {
+                        currentReview.getComments().add(comment);
+                        isAlreadyPresent = true;
                     }
+                }
 
-                    if (!isAlreadyPresent) {
-                        Review review = new Review();
-                        review.setId(reviewId);
-                        review.setComments(new ArrayList());
-                        review.getComments().add(comment);
-                        pullRequest.getReviews().add(review);
-                    }
+                if (!isAlreadyPresent) {
+                    Review review = new Review();
+                    review.setId(reviewId);
+                    review.setComments(new ArrayList());
+                    review.getComments().add(comment);
+                    pullRequest.getReviews().add(review);
                 }
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void editReviewCommentOnReview(String repositoryName, int pullRequestNumber, long reviewId, Comment updatedComment, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    for (Review currentReview : pullRequest.getReviews()) {
-                        if (currentReview.getId() == reviewId) {
-                            for (Comment comment : currentReview.getComments()) {
-                                if (comment.getId() == updatedComment.getId()) {
-                                    comment.copy(updatedComment);
-                                }
+                for (Review currentReview : pullRequest.getReviews()) {
+                    if (currentReview.getId() == reviewId) {
+                        for (Comment comment : currentReview.getComments()) {
+                            if (comment.getId() == updatedComment.getId()) {
+                                comment.copy(updatedComment);
                             }
                         }
                     }
@@ -417,37 +386,35 @@ public class DatabaseServiceImpl implements DatabaseService {
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void deleteReviewCommentFromReview(String repositoryName, int pullRequestNumber, long reviewId, long commentId, Map<String, Object> updateKeys) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<PullRequest> pullRequests = repository.getPullRequests();
+        List<PullRequest> pullRequests = repository.getPullRequests();
 
-            for (PullRequest pullRequest : pullRequests) {
-                if (pullRequest.getNumber() == pullRequestNumber) {
-                    for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
-                        try {
-                            pullRequest.set(entry.getKey(), entry.getValue());
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                        }
+        for (PullRequest pullRequest : pullRequests) {
+            if (pullRequest.getNumber() == pullRequestNumber) {
+                for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
+                    try {
+                        pullRequest.set(entry.getKey(), entry.getValue());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                     }
+                }
 
-                    for (Review currentReview : pullRequest.getReviews()) {
-                        if (currentReview.getId() == reviewId) {
+                for (Review currentReview : pullRequest.getReviews()) {
+                    if (currentReview.getId() == reviewId) {
 
-                            Iterator iterator = currentReview.getComments().iterator();
+                        Iterator iterator = currentReview.getComments().iterator();
 
-                            while (iterator.hasNext()) {
-                                Comment comment = (Comment) iterator.next();
+                        while (iterator.hasNext()) {
+                            Comment comment = (Comment) iterator.next();
 
-                                if (comment.getId() == commentId) {
-                                    iterator.remove();
-                                }
+                            if (comment.getId() == commentId) {
+                                iterator.remove();
                             }
                         }
                     }
@@ -455,102 +422,72 @@ public class DatabaseServiceImpl implements DatabaseService {
             }
         }
 
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void addBranchToRepository(String repositoryName, Branch branch) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
-
-        for (Repository repository : repositories) {
-            repository.getBranches().add(branch);
-        }
-        repositoryCollection.save(repositories);
+        Repository repository = repositoryCollection.findByName(repositoryName);
+        repository.getBranches().add(branch);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void deleteBranchFromRepository(String repositoryName, String ref) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            Iterator<Branch> iterator = repository.getBranches().iterator();
-            while (iterator.hasNext()) {
-                Branch branch = iterator.next();
-                if (branch.getRef().equalsIgnoreCase(ref)) {
-                    iterator.remove();
-                }
+        Iterator<Branch> iterator = repository.getBranches().iterator();
+        while (iterator.hasNext()) {
+            Branch branch = iterator.next();
+            if (branch.getRef().equalsIgnoreCase(ref)) {
+                iterator.remove();
             }
         }
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 
     @Override
     public void addCollaboratorToRepository(String repositoryName, Collaborator collaborator) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
-        for (Repository repository : repositories) {
-            for (Repository repositoryObj : repositories) {
-                repositoryObj.getCollaborators().add(collaborator);
-            }
-            repositoryCollection.save(repositories);
-        }
+        Repository repository = repositoryCollection.findByName(repositoryName);
+        repository.getCollaborators().add(collaborator);
+        repositoryCollection.save(repository);
     }
 
     @Override
-    public boolean getMailSentValue(String repositoryName, String ref) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+    public boolean getMailSent(String repositoryName, String branchName) {
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<Branch> branchList = repository.getBranches();
-            for (Branch branch : branchList) {
-                if (branch.getRef().equalsIgnoreCase(ref)) {
-                    return branch.mailSent;
-                }
+        for (Branch branch : repository.getBranches()) {
+            if (branch.getRef().equalsIgnoreCase(branchName)) {
+                return branch.mailSent;
             }
         }
+
         return false;
     }
 
     @Override
-    public void updateStaleValue(String repositoryName, StaleBranch staleBranch) {
-        List<Repository> repositories = repositoryCollection.findByName(repositoryName);
+    public void updateStale(String repositoryName, String branchName) {
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            List<Branch> branchList = repository.getBranches();
-            for (Branch branch : branchList) {
-                if (branch.getRef().equalsIgnoreCase(staleBranch.getName())) {
-                    branch.setStale(true);
-                }
+        for (Branch branch : repository.getBranches()) {
+            if (branch.getRef().equalsIgnoreCase(branchName)) {
+                branch.setStale(true);
             }
         }
-        repositoryCollection.save(repositories);
+
+        repositoryCollection.save(repository);
     }
 
     @Override
-    public List<RepositoryDetails> getRepositoryDetails() {
-        List<RepositoryDetails> repositoryList = new ArrayList<>();
-        List<Repository> repositories = repositoryCollection.findAll();
+    public void updateMailSent(String repositoryName, String branchName) {
+        Repository repository = repositoryCollection.findByName(repositoryName);
 
-        for (Repository repository : repositories) {
-            RepositoryDetails repo = new RepositoryDetails();
-            repo.setName(repository.getName());
-            repo.setOwner(repository.getOwner().login);
-            repositoryList.add(repo);
-        }
-        return repositoryList;
-    }
-
-    @Override
-    public void updateMailSentValue(String repositoryName, StaleBranch staleBranch) {
-        List<Repository> repositories = repositoryCollection.findAll();
-
-        for (Repository repository : repositories) {
-            List<Branch> branchList = repository.getBranches();
-            for (Branch branch : branchList) {
-                if (branch.getRef().equalsIgnoreCase(staleBranch.getName())) {
-                    branch.setMailSent(true);
-                }
+        for (Branch branch : repository.getBranches()) {
+            if (branch.getRef().equalsIgnoreCase(branchName)) {
+                branch.setMailSent(true);
             }
         }
-        repositoryCollection.save(repositories);
+        repositoryCollection.save(repository);
     }
 }

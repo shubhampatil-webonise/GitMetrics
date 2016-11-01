@@ -10,8 +10,6 @@ import org.webonise.gitmetrics.Documents.PullRequest;
 import org.webonise.gitmetrics.Documents.Repository;
 import org.webonise.gitmetrics.Documents.Review;
 import org.webonise.gitmetrics.Entities.GitRepository;
-import org.webonise.gitmetrics.Utilities.RepositoryDetails;
-import org.webonise.gitmetrics.Utilities.StaleBranch;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +18,7 @@ import java.util.Map;
 public interface DatabaseService {
     List<GitRepository> findListOfRepositories();
 
-    List<Repository> findRepositoryDetailsByName(String name);
+    Repository findRepositoryDetailsByName(String name);
 
     String saveRepository(Repository repository);
 
@@ -60,13 +58,13 @@ public interface DatabaseService {
 
     void deleteBranchFromRepository(String repositoryName, String ref);
 
-    void addCollaboratorToRepository(String repositoryName, Collaborator collaboratorObj);
+    void addCollaboratorToRepository(String repositoryName, Collaborator collaborator);
 
-    boolean getMailSentValue(String repositoryName, String ref);
+    boolean getMailSent(String repositoryName, String branchName);
 
-    void updateStaleValue(String repositoryName, StaleBranch staleBranch);
+    void updateStale(String repositoryName, String branchName);
 
-    List<RepositoryDetails> getRepositoryDetails();
+    // List<RepositoryDetails> getRepositoryDetails();
 
-    void updateMailSentValue(String repositoryName, StaleBranch staleBranch);
+    void updateMailSent(String repositoryName, String branchName);
 }

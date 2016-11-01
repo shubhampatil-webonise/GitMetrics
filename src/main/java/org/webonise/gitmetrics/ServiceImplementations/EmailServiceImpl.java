@@ -22,8 +22,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void send(String toEmail, String data) {
-        System.out.println("Sending Mail");
-
         this.simpleMailMessage = new SimpleMailMessage();
 
         this.simpleMailMessage.setSubject("Stale Branches");
@@ -37,8 +35,5 @@ public class EmailServiceImpl implements EmailService {
         } catch (MailException ex) {
             System.err.println(ex.getMessage());
         }
-
-        System.out.println("Mail Sent");
-
     }
 }

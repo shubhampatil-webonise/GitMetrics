@@ -12,15 +12,6 @@
     border-radius: 0px;
 }
 
-.thumbnail {
-    text-align: center;
+.attribute {
+    margin-left:7px;
 }
-
-.content a {
-    text-decoration: none;
-}
-
-.content a:hover {
-    text-decoration: none;
-}
-

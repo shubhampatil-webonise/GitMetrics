@@ -44,8 +44,8 @@ public class DashboardController {
 
     @RequestMapping("/org/repos/{repo}")
     @ResponseBody
-    public String getSomething(@PathVariable("repo") String name) {
-        List<Repository> repositories = databaseService.findRepositoryDetailsByName(name);
-        return gson.toJson(repositories);
+    public String getRepositoryData(@PathVariable("repo") String name) {
+        Repository repository = databaseService.findRepositoryDetailsByName(name);
+        return gson.toJson(repository);
     }
 }
