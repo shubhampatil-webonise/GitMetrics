@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 public class DashboardController {
-    private static final Logger logger = Logger.getLogger(DashboardController.class.getName());
+    private static final Logger logger = Logger.getLogger(DashboardController.class);
 
     @Autowired
     private HttpRequestResponseService httpRequestResponseService;

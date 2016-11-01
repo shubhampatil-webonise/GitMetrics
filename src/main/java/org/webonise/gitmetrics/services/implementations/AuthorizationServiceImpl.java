@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class AuthorizationServiceImpl implements AuthorizationService {
 
-    private static final Logger logger = Logger.getLogger(AuthorizationServiceImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(AuthorizationServiceImpl.class);
 
     @Autowired
     private HttpRequestResponseService httpRequestResponseService;
@@ -38,11 +38,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             String organizationDetails = httpRequestResponseService.get("https://api.github.com/orgs/" + organization + "/memberships/" + loginHandle, headers);
             String role = gson.fromJson(organizationDetails, JsonObject.class).get("role").getAsString();
 
-            if (role.equalsIgnoreCase("admin"))
-                return true;
-
+            return role.equalsIgnoreCase("admin");
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getStackTrace());
         }
 
         return false;

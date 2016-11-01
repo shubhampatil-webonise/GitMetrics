@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Component
 public class PullRequestServiceImpl implements PullRequestService {
-    private static final Logger logger = Logger.getLogger(PullRequestService.class.getName());
+    private static final Logger logger = Logger.getLogger(PullRequestService.class);
     private static final String ACTION_KEY = "action";
     private static final String OPEN_VALUE = "opened";
     private static final String CLOSE_VALUE = "closed";

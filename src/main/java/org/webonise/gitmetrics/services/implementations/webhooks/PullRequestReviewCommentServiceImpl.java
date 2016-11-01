@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Component
 public class PullRequestReviewCommentServiceImpl implements PullRequestReviewCommentService {
-    private static final Logger logger = Logger.getLogger(PullRequestService.class.getName());
+    private static final Logger logger = Logger.getLogger(PullRequestService.class);
     private static final String ACTION_KEY = "action";
     private static final String CREATE_KEY = "created";
     private static final String EDIT_KEY = "edited";

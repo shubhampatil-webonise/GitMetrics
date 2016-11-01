@@ -1,5 +1,7 @@
 package org.webonise.gitmetrics.documents;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,22 +12,22 @@ import java.util.List;
 public class Repository {
 
     @Id
-    public String id;
+    private String id;
 
     @Indexed(unique = true)
-    public String name;
+    private String name;
 
-    public String description;
-    public String sender;
-    public String createdAt;
-    public String updatedAt;
-    public String url;
-    public Boolean privateRepo;
-    public Owner owner;
+    private String description;
+    private String sender;
+    private String createdAt;
+    private String updatedAt;
+    private String url;
+    private Boolean privateRepo;
+    private Owner owner;
 
-    public List<Collaborator> collaborators;
-    public List<Branch> branches;
-    public List<PullRequest> pullRequests;
+    private List<Collaborator> collaborators;
+    private List<Branch> branches;
+    private List<PullRequest> pullRequests;
 
     public Owner getOwner() {
         return owner;
@@ -73,5 +75,115 @@ public class Repository {
 
     public List<Collaborator> getCollaborators() {
         return collaborators;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Boolean getPrivateRepo() {
+        return privateRepo;
+    }
+
+    public void setPrivateRepo(Boolean privateRepo) {
+        this.privateRepo = privateRepo;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public void setCollaborators(List<Collaborator> collaborators) {
+        this.collaborators = collaborators;
+    }
+
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
+    }
+
+    public void setPullRequests(List<PullRequest> pullRequests) {
+        this.pullRequests = pullRequests;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Repository)) return false;
+
+        Repository that = (Repository) o;
+
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(name, that.name)
+                .append(description, that.description)
+                .append(sender, that.sender)
+                .append(createdAt, that.createdAt)
+                .append(updatedAt, that.updatedAt)
+                .append(url, that.url)
+                .append(privateRepo, that.privateRepo)
+                .append(owner, that.owner)
+                .append(collaborators, that.collaborators)
+                .append(branches, that.branches)
+                .append(pullRequests, that.pullRequests)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(name)
+                .append(description)
+                .append(sender)
+                .append(createdAt)
+                .append(updatedAt)
+                .append(url)
+                .append(privateRepo)
+                .append(owner)
+                .append(collaborators)
+                .append(branches)
+                .append(pullRequests)
+                .toHashCode();
     }
 }

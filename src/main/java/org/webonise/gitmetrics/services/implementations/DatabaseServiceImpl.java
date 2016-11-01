@@ -83,7 +83,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -132,7 +132,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -160,7 +160,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -183,7 +183,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -213,7 +213,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -236,7 +236,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -266,7 +266,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -296,7 +296,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -307,7 +307,6 @@ public class DatabaseServiceImpl implements DatabaseService {
                         currentReview.setBody(review.getBody());
                         currentReview.setUser(review.getUser());
                         currentReview.setSubmittedAt(review.getSubmittedAt());
-//                            currentReview.setComments(review.getComments());
                         isAlreadyPresent = true;
                     }
                 }
@@ -333,7 +332,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
                 boolean isAlreadyPresent = false;
@@ -370,7 +369,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -401,7 +400,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     try {
                         pullRequest.set(entry.getKey(), entry.getValue());
                     } catch (Exception e) {
-                        logger.error(e.getMessage());
+                        logger.error(e.getStackTrace());
                     }
                 }
 
@@ -459,7 +458,7 @@ public class DatabaseServiceImpl implements DatabaseService {
 
         for (Branch branch : repository.getBranches()) {
             if (branch.getRef().equalsIgnoreCase(branchName)) {
-                return branch.mailSent;
+                return branch.getMailSent();
             }
         }
 

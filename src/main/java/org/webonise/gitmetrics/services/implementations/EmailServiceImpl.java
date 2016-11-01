@@ -21,14 +21,14 @@ public class EmailServiceImpl implements EmailService {
     private String fromEmail;
 
     @Override
-    public void send(String toEmail, String data) {
+    public void send(String toEmail, String body,String subject) {
         this.simpleMailMessage = new SimpleMailMessage();
 
-        this.simpleMailMessage.setSubject("Stale Branches");
+        this.simpleMailMessage.setSubject(subject);
         this.simpleMailMessage.setFrom(this.fromEmail);
         this.simpleMailMessage.setTo(toEmail);
 
-        simpleMailMessage.setText("You have "+ data +" as a stale branch");
+        simpleMailMessage.setText(body);
 
         try {
             this.mailSender.send(simpleMailMessage);

@@ -14,17 +14,17 @@ import org.webonise.gitmetrics.services.interfaces.webhooks.BranchService;
 @RequestMapping("/webhooks/repository/branch")
 public class BranchController {
     @Autowired
-    private BranchService service;
+    private BranchService branchService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void getCreatedBranchInfo(@RequestBody String payload, HttpServletRequest request) {
-        service.actionOnCreate(payload);
+        branchService.actionOnCreate(payload);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public void getDeletedBranchInfo(@RequestBody String payload, HttpServletRequest request) {
-        service.actionOnDelete(payload);
+        branchService.actionOnDelete(payload);
     }
 }
