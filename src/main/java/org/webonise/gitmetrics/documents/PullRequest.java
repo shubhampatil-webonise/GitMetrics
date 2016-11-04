@@ -51,7 +51,7 @@ public class PullRequest {
     }
 
     public void set(String key, Object value) throws Exception {
-        Field field = this.getClass().getField(key);
+        Field field = this.getClass().getDeclaredField(key);
         field.set(this, value);
     }
 
@@ -211,7 +211,7 @@ public class PullRequest {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder()
                 .append(number)
                 .append(state)
                 .append(title)

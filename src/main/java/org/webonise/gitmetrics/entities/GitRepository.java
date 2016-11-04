@@ -34,21 +34,36 @@ public class GitRepository {
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public Long getId() {
+        return id;
     }
 
-    public String getDescription() {
-        return description;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getObjectId() {
         return objectId;
     }
 
-    @Override
-    public String toString() {
-        return String.format("Repository [id=%d, name=%s, desc=%s]", objectId, name, description);
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -69,7 +84,7 @@ public class GitRepository {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder()
                 .append(id)
                 .append(objectId)
                 .append(name)

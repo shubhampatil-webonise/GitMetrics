@@ -12,7 +12,7 @@
     <script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
 </head>
 
-<body ng-controller="mainController">
+<body ng-controller="mainController" class="ng-cloak">
     <header>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -26,9 +26,7 @@
             </div>
         </nav>        
     </header>
-    
-<!--    {{repository}}-->
-    
+        
     <section class="content">
         <div class="container">
             <div class="row">
@@ -44,88 +42,179 @@
                 <div class="tab-content col-md-offset-2">
                     <div role="tabpanel" class="tab-pane active fade in" id="repoDetails">
                         <div class="jumbotron">
-                            <p><span>Name:</span><span class="attribute">{{repository.name}}</span></p>
-                            <p><span>Description:</span><span class="attribute">{{repository.description}}</span></p>
-                            <p><span>Sender:</span><span class="attribute">{{repository.sender}}</span></p>
-                            <p><span>Created At:</span><span class="attribute">{{repository.createdAt}}</span></p>
-                            <p><span>Updated At:</span><span class="attribute">{{repository.updatedAt}}</span></p>
-                            <p><span>Url:</span><span class="attribute">{{repository.url}}</span></p>
-                            <p><span>Private Repository:</span><span class="attribute">{{repository.privateRepo}}</span></p>
-                            <p><span>Owner Login:</span><span class="attribute">{{repository.owner.login}}</span></p>
-                            <p><span>Owner Type:</span><span class="attribute">{{repository.owner.type}}</span></p>
-                            <p><span>Owner Url:</span><span class="attribute">{{repository.owner.url}}</span></p>
-                        </div>
-                    </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="thumbnail">
+                                        <div class="caption">
+                                            <i class="fa fa-github fa-5x" aria-hidden="true"></i>
+                                            <h4>{{repository.name}}</h4>
+                                        </div>
+                                    </div>                                
+                                </div>
+                                
+                                <div class="col-md-5">
+                                    <p><strong>Created By :</strong> {{repository.sender}}</p>
+                                    <p><strong>Created At :</strong> {{repository.createdAt}}</p>
+                                    <p><strong>Last Updated At :</strong> {{repository.updatedAt}}</p>
+                                    <p><strong>Is a Private Repository :</strong> {{repository.privateRepo}}</p>
+                                </div>
 
-                    <div role="tabpanel" class="tab-pane active fade" id="repoPullRequests">
-                        <div class="panel panel-primary" ng-repeat="pr in repository.pullRequests">
-                            <div class="panel-heading">PR #{{pr.number}} : {{pr.title}}</div>
-                            <div class="panel-body">
-                                <p><span>Body:</span><span class="attribute">{{pr.body}}</span></p>
-                                <p></p>
-                                 <p><span>State:</span><span class="attribute">{{pr.state}}</span></p>
-                                <p></p>
-                                <p><span>Created At:</span><span class="attribute">{{pr.createdAt}}</span></p>
-                                <p></p>
-                                <p><span>Closed At:</span><span class="attribute">{{pr.closedAt}}</span></p>
-                                <p></p>
-                                <p><span>Updated At:</span><span class="attribute">{{pr.updatedAt}}</span></p>
-                                <p></p>
-                                <p><span>Merged Status:</span><span class="attribute">{{pr.merged}}</span></p>
-                                <p></p>
-                                <p><span>Merged At:</span><span class="attribute">{{pr.mergedAt}}</span></p>
-                                <p></p>
-                                <p><span>Merged By:</span><span class="attribute">{{pr.mergedBy}}</span></p>
-                                <p></p>
-                                <p><span>Sender:</span><span class="attribute">{{pr.sender}}</span></p>
-                                <p></p>
-                                <p><span>User Login:</span><span class="attribute">{{pr.user.login}}</span></p>
-                                <p></p>
-                                <p><span>User Type:</span><span class="attribute">{{pr.user.type}}</span></p>
-                                <p></p>
-                                <p><span>Head Ref:</span><span class="attribute">{{pr.head.ref}}</span></p>
-                                <p></p>
-                                <p><span>Head User Login:</span><span class="attribute">{{pr.head.user.login}}</span></p>
-                                <p><span>Head User Type:</span><span class="attribute">{{pr.head.user.type}}</span></p>
-                                <p><span>Head Repo Name:</span><span class="attribute">{{pr.head.repo.name}}</span></p>
-                                <p><span>Head Repo Owner Login:</span><span class="attribute">{{pr.head.repo.owner.login}}</span></p>
-                                <p><span>Base Ref:</span><span class="attribute">{{pr.base.ref}}</span></p>
-                                <p></p>
-                                <p><span>Base User Login:</span><span class="attribute">{{pr.base.user.login}}</span></p>
-                                <p><span>Base User Type:</span><span class="attribute">{{pr.base.user.type}}</span></p>
-                                <p><span>Base Repo Name:</span><span class="attribute">{{pr.base.repo.name}}</span></p>
-                                <p><span>Base Repo Owner Login:</span><span class="attribute">{{pr.base.repo.owner.login}}</span></p>
-                                <p>{{pr.assignees}}</p>
-                                <p>{{pr.labels}}</p>
-                                <p>{{pr.comments}}</p>
-                                <p>{{pr.reviews}}</p>
-                             </div>
-                        </div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane active fade" id="repoBranches">
-                        <div class="panel panel-primary" ng-repeat="branch in repository.branches">
-                            <div class="panel-heading">Branch : {{branch.ref}}</div>
-                            <div class="panel-body">
-                                <p><span>Created By:</span><span class="attribute">{{branch.sender}}</span></p>
-                                 <p><span>Stale Status:</span><span class="attribute">{{branch.stale}}</span></p>
-                                 <p><span>Mail Send Status:</span><span class="attribute">{{branch.mailSent}}</span></p>
+                                <div class="col-md-4">
+                                    <p><strong>Owner :</strong> {{repository.owner.login}}</p>
+                                    <p><strong>Type :</strong> {{repository.owner.type}}</p>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <p><strong>Description :</strong> {{repository.description}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div role="tabpanel" class="tab-pane active fade" id="repoCollaborators">
-                        <div class="panel panel-primary" ng-repeat="collaborator in repository.collaborators">
-                            <div class="panel-body">
-                             <p><span>Collaborator Login:</span><span class="attribute">{{collaborator.login}}</span></p>
-                             <p><span>Collaborator Type:</span><span class="attribute">{{collaborator.type}}</span></p>    
-                             </div>
+                    <div role="tabpanel" class="tab-pane fade" id="repoPullRequests">
+                        <div class="panel-group">
+                            <div class="panel panel-primary" ng-repeat="pr in repository.pullRequests">
+                                
+                                <div class="modal fade bs-example-modal-lg" id="{{'prCommentsModal' + pr.number}}" tabindex="-1" role="dialog" aria-labelledBy="{{'prCommentsModel' + pr.number + 'Label'}}">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="{{'prCommentsModal' + pr.number + 'Label'}}">Comments on Pull Request #{{pr.number}}</h4>
+                                            </div>
+                                            
+                                            <div class="modal-body">
+                                                <div class="list-group">
+                                                    <div class="list-group-item" ng-repeat="comment in pr.comments">
+                                                        <p class="list-group-item-heading"><strong>#{{comment.id}}</strong> by <strong> {{comment.user.login}}:</strong> {{comment.body}}</p>
+                                                        
+                                                        <div class="list-group-item-text clearfix">
+                                                            <span class="pull-left"><strong>Commented At :</strong> {{comment.createdAt}}</span>
+                                                            
+                                                            <span class="pull-right"><strong>Last Updated At :</strong> {{comment.updatedAt}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal fade bs-example-modal-lg" id="{{'prReviewsModal' + pr.number}}" tabindex="-1" role="dialog" aria-labelledBy="{{'prReviewsModel' + pr.number + 'Label'}}">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="{{'prReviewsModal' + pr.number + 'Label'}}">Reviews on Pull Request #{{pr.number}}</h4>
+                                            </div>
+                                            
+                                            <div class="modal-body">
+                                                <div class="list-group">
+                                                    <div class="list-group-item" ng-repeat="review in pr.reviews">
+                                                        <p class="list-group-item-heading"><strong>#{{review.id}}</strong> by <strong> {{review.user.login}}</strong> at {{review.submittedAt}}</p>
+                                                        
+                                                        <div class="list-group-item-text clearfix">
+                                                            <div>{{review.body}}</div>
+                                                            
+                                                            <h5 ng-if="review.comments.length > 0"><strong>Comments on this review :</strong></h5>
+                                                            <p ng-repeat="comment in review.comments">
+                                                                <strong>#{{comment.id}}</strong> by <strong>{{comment.user.login}}:</strong> {{comment.body}}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="panel-heading">
+                                    <a data-toggle="collapse" href="{{'#prPanel' + pr.number}}">
+                                            <p class="text-left">PR #{{pr.number}} : {{pr.title}}</p>
+                                            <p class="text-right">By : {{pr.user.login}} at {{pr.createdAt}}</p>
+                                    </a>
+                                </div>
+
+                                <div class="panel-collapse collapse" id="{{'prPanel' + pr.number}}">
+                                    <div class="panel-body">
+                                        <p>{{pr.body}}</p>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>State :</strong> {{pr.state}} <span ng-if="pr.state == 'closed' &amp;&amp; pr.closedAt != null">at {{pr.closedAt}}</span></p>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <p><strong>Is Merged :</strong> {{pr.merged}}</p>
+                                                <p ng-if="pr.merged == true &amp;&amp; pr.mergedAt != null"><strong>Merged At :</strong> {{pr.mergedAt}}</p>
+                                                <p ng-if="pr.merged == true &amp;&amp; pr.mergedBy != null"><strong>Merged By :</strong> {{pr.mergedBy}}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <p>
+                                            <strong ng-if="pr.labels.length > 0">Labels :</strong>
+                                            <span class="label" ng-repeat="label in pr.labels" style="background-color:{{'#' + label.color}};">{{label.name}}</span>
+                                        </p>
+                                        
+                                        <p>
+                                            <strong ng-if="pr.assignees.length > 0">Assignees :</strong>
+                                            <span class="badge" ng-repeat="assignee in pr.assignees">{{assignee.login}}</span>
+                                        </p>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-2 pull-right">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{'#prCommentsModal' + pr.number}}">View Comments</button>
+                                            </div>
+                                            
+                                            <div class="col-md-2 pull-right">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{'#prReviewsModal' + pr.number}}">View Reviews</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="panel-footer">
+                                        <span><strong>Last Updated At :</strong> {{pr.updatedAt}}</span>
+                                        <span class="pull-right">
+                                            <span>{{pr.head.ref}}</span>
+                                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                            <span>{{pr.base.ref}}</span>                                        
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="repoBranches">
+                        <div class="list-group">
+                            <div class="list-group-item" ng-repeat="branch in repository.branches">
+                                <h3 class="list-group-item-heading">{{branch.ref}}</h3>
+
+                                <div class="list-group-item-text">
+                                    <strong>Created By : </strong> {{branch.sender}}
+                                </div>
+                            </div>
+                        </div>                                            
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="repoCollaborators">
+                        
+                        <div class="row">
+                            <div class="col-md-3" ng-repeat="collaborator in repository.collaborators">
+                                <div class="thumbnail">
+                                    <div class="caption">
+                                        <i class="fa fa-smile-o fa-5x" aria-hidden="true"></i>
+                                        <h4>{{collaborator.login}}</h4>
+                                        <h5>({{collaborator.type}})</h5>
+                                    </div>
+                                </div>                                                                
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </section>    
     
 <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>

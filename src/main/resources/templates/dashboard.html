@@ -13,7 +13,7 @@
 
 </head>
 
-<body ng-controller="mainController">
+<body ng-controller="mainController" class="ng-cloak">
 
     <header>
         <nav class="navbar navbar-default">
@@ -32,16 +32,36 @@
     <section class="content">
         <div class="container">
             <div class="row">
-                <div class="col-md-2" ng-repeat="repo in repoList">
-                    <a href="{{'/dashboard/' + repo.name}}">
-                        <div class="thumbnail">
-                            <div class="Caption">
-                                <i class="fa fa-github fa-5x" aria-hidden="true"></i>
-                                <h3>{{repo.name}}</h3>
-                                <p>{{repo.description}}</p>
+                <div class="col-md-2">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li role="presentation" class="active"><a href="#repos" aria-controls="repos"  role="tab" data-toggle="pill">Repositories</a></li>
+                        <li role="presentation"><a href="#members" aria-controls="members"  role="tab" data-toggle="pill">Members</a></li>
+                    </ul>
+                </div>
+
+                <div class="tab-content col-md-offset-2">
+                    <div role="tabpanel" class="tab-pane active fade in" id="repos">
+                        <div class="jumbotron">
+                            <div class="row" style="display:flex; flex-wrap: wrap;">
+                                <div class="col-md-3" ng-repeat="repo in repoList">
+                                    <a href="{{'/dashboard/' + repo.name}}">
+                                        <div class="thumbnail">
+                                            <div class="caption">
+                                                <i class="fa fa-github fa-5x" aria-hidden="true"></i>
+                                                <h4>{{repo.name}}</h4>
+                                                <h5 title="{{repo.description}}">{{repo.description}}</h5>
+                                            </div>                                        
+                                        </div>
+                                    </a>
+                                </div>                            
                             </div>
                         </div>
-                    </a>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane active fade" id="members">
+                        <div class="jumbotron">
+                        </div>
+                    </div>  
                 </div>
             </div>
         </div>

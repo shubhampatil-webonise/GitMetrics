@@ -1,5 +1,7 @@
 var app = angular.module("gitmetrics", []).controller("mainController", function($scope, $http, $window){
 
+    $scope.repository = null;
+    
     $scope.getRepoData = function(){
         var repoName = $window.location.pathname.split("/")[2];
 
@@ -7,7 +9,7 @@ var app = angular.module("gitmetrics", []).controller("mainController", function
             method : "GET",
             url : "/org/repos/" + repoName
         }).then(function(response){
-            $scope.repository = response.data;
+            $scope.repository = response.data;  
             return true;
         }, function(error){
             console.log(error);
@@ -16,5 +18,4 @@ var app = angular.module("gitmetrics", []).controller("mainController", function
     }
 
     $scope.getRepoData();
-    setInterval($scope.getRepoData, 2000);
 })

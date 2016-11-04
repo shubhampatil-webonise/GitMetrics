@@ -21,10 +21,10 @@ import java.util.Set;
 @Component
 public class StaleBranchDetector {
     @Autowired
-    JsonParser jsonParser;
+    private JsonParser jsonParser;
 
     @Autowired
-    HttpRequestResponseService httpRequestResponseService;
+    private HttpRequestResponseService httpRequestResponseService;
 
     @Autowired
     private DatabaseService databaseService;

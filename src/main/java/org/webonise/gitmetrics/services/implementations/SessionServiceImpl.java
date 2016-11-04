@@ -1,12 +1,12 @@
 package org.webonise.gitmetrics.services.implementations;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.services.interfaces.SessionService;
 
 import javax.servlet.http.HttpSession;
 
-@Service
+@Component
 public class SessionServiceImpl implements SessionService {
     private HttpSession session;
 

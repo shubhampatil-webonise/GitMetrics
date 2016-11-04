@@ -25,7 +25,7 @@ import java.util.Map;
 @Component
 public class DatabaseServiceImpl implements DatabaseService {
 
-    private final static Logger logger = Logger.getLogger(DatabaseServiceImpl.class.getName());
+    private final static Logger logger = Logger.getLogger(DatabaseServiceImpl.class);
 
     @Autowired
     private RepositoryList repositoryList;
@@ -154,6 +154,7 @@ public class DatabaseServiceImpl implements DatabaseService {
     public void addLabelToPullRequest(String repositoryName, int pullRequestNumber, Label label, Map<String, Object> updateKeys) {
         Repository repository = repositoryCollection.findByName(repositoryName);
         List<PullRequest> pullRequests = repository.getPullRequests();
+
         for (PullRequest pullRequest : pullRequests) {
             if (pullRequest.getNumber() == pullRequestNumber) {
                 for (Map.Entry<String, Object> entry : updateKeys.entrySet()) {
