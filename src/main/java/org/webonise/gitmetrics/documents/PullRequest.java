@@ -51,7 +51,7 @@ public class PullRequest {
     }
 
     public void set(String key, Object value) throws Exception {
-        Field field = this.getClass().getField(key);
+        Field field = this.getClass().getDeclaredField(key);
         field.set(this, value);
     }
 
