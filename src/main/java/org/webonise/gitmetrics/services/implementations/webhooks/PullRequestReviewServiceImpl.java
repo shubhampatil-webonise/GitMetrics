@@ -46,7 +46,6 @@ public class PullRequestReviewServiceImpl implements PullRequestReviewService {
     }
 
     private void actionOnSubmit(String payload) {
-        System.out.println("new review request");
         String repositoryName = jsonParser.parse(payload, "repository.name");
         int number = Integer.parseInt(jsonParser.parse(payload, "pull_request.number"));
 
