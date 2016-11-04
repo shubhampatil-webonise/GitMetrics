@@ -23,10 +23,14 @@ public class MainController {
     @Value("${gitmetrics.org.name}")
     private String organization;
 
+    @Value("${gitmetrics.client.personal-access-token}")
+    private String accessToken;
+
     @RequestMapping("/")
     public String renderHomepage(Model model, @RequestParam(required = false) boolean loginFailed, HttpServletRequest request) {
         if (sessionService.getSession(request, false) == null) {
-            model.addAttribute("authParams", "client_id=" + clientId + "&scope=" + scope);
+//            model.addAttribute("authParams", "client_id=" + clientId + "&scope=" + scope);
+            model.addAttribute("authParams", accessToken);
             model.addAttribute("loginFailed", loginFailed);
             return "index";
         } else {

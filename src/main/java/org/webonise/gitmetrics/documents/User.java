@@ -41,7 +41,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder()
                 .append(login)
                 .append(type)
                 .toHashCode();

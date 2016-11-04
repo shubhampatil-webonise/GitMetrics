@@ -2,7 +2,7 @@ package org.webonise.gitmetrics.services.implementations.webhooks;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.documents.Branch;
 import org.webonise.gitmetrics.services.interfaces.DatabaseService;
 import org.webonise.gitmetrics.services.interfaces.JsonParser;
@@ -11,7 +11,7 @@ import org.webonise.gitmetrics.services.interfaces.webhooks.BranchService;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class BranchServiceImpl implements BranchService {
     @Autowired
     private JsonParser jsonParser;

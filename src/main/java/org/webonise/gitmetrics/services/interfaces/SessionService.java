@@ -1,9 +1,11 @@
 package org.webonise.gitmetrics.services.interfaces;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 
+@Service
 public interface SessionService {
 
     HttpSession getSession(HttpServletRequest request, boolean createIfNotExist);

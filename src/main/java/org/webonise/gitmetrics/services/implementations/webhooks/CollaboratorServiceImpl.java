@@ -2,7 +2,7 @@ package org.webonise.gitmetrics.services.implementations.webhooks;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.documents.Collaborator;
 import org.webonise.gitmetrics.services.interfaces.DatabaseService;
 import org.webonise.gitmetrics.services.interfaces.JsonParser;
@@ -10,10 +10,10 @@ import org.webonise.gitmetrics.services.interfaces.webhooks.CollaboratorService;
 
 import java.util.ArrayList;
 
-@Service
+@Component
 public class CollaboratorServiceImpl implements CollaboratorService {
     @Autowired
-    JsonParser jsonParser;
+    private JsonParser jsonParser;
 
     @Autowired
     private DatabaseService databaseService;

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.documents.Repository;
 import org.webonise.gitmetrics.entities.GitRepository;
 import org.webonise.gitmetrics.services.interfaces.DatabaseService;
@@ -14,7 +14,7 @@ import org.webonise.gitmetrics.services.interfaces.webhooks.RepositoryService;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class RepositoryServiceImpl implements RepositoryService {
 
     @Autowired

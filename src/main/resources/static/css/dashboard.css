@@ -14,6 +14,7 @@
 
 .thumbnail {
     text-align: center;
+    word-break: break-all;
 }
 
 .content a {
@@ -22,5 +23,19 @@
 
 .content a:hover {
     text-decoration: none;
+}
+
+.container .jumbotron {
+    background-color: white;
+}
+
+.thumbnail .caption {
+    color: #428bca;
+}
+
+.thumbnail .caption h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 

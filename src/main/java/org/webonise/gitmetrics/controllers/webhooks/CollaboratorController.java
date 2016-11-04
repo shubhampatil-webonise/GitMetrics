@@ -1,6 +1,5 @@
 package org.webonise.gitmetrics.controllers.webhooks;
 
-
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,7 +14,7 @@ import org.webonise.gitmetrics.services.interfaces.webhooks.CollaboratorService;
 @RequestMapping("/webhooks/repository")
 public class CollaboratorController {
     @Autowired
-    CollaboratorService service;
+    private CollaboratorService service;
 
     @RequestMapping(value = "/collaborator", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody

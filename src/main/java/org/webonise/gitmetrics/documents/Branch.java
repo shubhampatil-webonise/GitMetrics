@@ -61,7 +61,7 @@ public class Branch {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder()
                 .append(ref)
                 .append(sender)
                 .append(stale)

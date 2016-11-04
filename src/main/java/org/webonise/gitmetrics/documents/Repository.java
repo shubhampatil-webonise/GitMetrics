@@ -2,7 +2,6 @@ package org.webonise.gitmetrics.documents;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -13,10 +12,8 @@ public class Repository {
 
     @Id
     private String id;
-
-    @Indexed(unique = true)
+    
     private String name;
-
     private String description;
     private String sender;
     private String createdAt;
@@ -29,20 +26,8 @@ public class Repository {
     private List<Branch> branches;
     private List<PullRequest> pullRequests;
 
-    public Owner getOwner() {
-        return owner;
-    }
 
     protected Repository() {
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSender() {
-        return sender;
     }
 
     public Repository(String name, String description, String sender, String createdAt, String updatedAt, String url, Boolean privateRepo, Owner owner, List<Collaborator> collaborators, List<Branch> branches, List<PullRequest> pullRequests) {
@@ -57,8 +42,19 @@ public class Repository {
         this.owner = owner;
         this.collaborators = collaborators;
         this.branches = branches;
-
         this.pullRequests = pullRequests;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public Owner getOwner() {
+        return owner;
     }
 
     public String getId() {
@@ -171,7 +167,7 @@ public class Repository {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        return new HashCodeBuilder()
                 .append(id)
                 .append(name)
                 .append(description)
