@@ -12,8 +12,10 @@ import org.webonise.gitmetrics.documents.Repository;
 import org.webonise.gitmetrics.entities.GitRepository;
 import org.webonise.gitmetrics.services.interfaces.DatabaseService;
 import org.webonise.gitmetrics.services.interfaces.HttpRequestResponseService;
+import org.webonise.gitmetrics.services.interfaces.MemberService;
 import org.webonise.gitmetrics.services.interfaces.SessionService;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -35,6 +37,9 @@ public class DashboardController {
     @Autowired
     private DatabaseService databaseService;
 
+    @Autowired
+    private MemberService memberService;
+
     @RequestMapping("/org/repos")
     @ResponseBody
     public String getListOfRepositories() {
@@ -47,5 +52,19 @@ public class DashboardController {
     public String getRepositoryData(@PathVariable("repo") String name) {
         Repository repository = databaseService.findRepositoryDetailsByName(name);
         return gson.toJson(repository);
+    }
+
+    @RequestMapping("/org/members")
+    @ResponseBody
+    public String getMembers() {
+        String members = null;
+
+        try {
+            members = memberService.getMembers();
+        } catch (IOException e) {
+            logger.error(e.getStackTrace());
+        }
+
+        return members;
     }
 }

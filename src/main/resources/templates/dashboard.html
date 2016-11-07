@@ -35,7 +35,7 @@
                 <div class="col-md-2">
                     <ul class="nav nav-pills nav-stacked">
                         <li role="presentation" class="active"><a href="#repos" aria-controls="repos"  role="tab" data-toggle="pill">Repositories</a></li>
-                        <li role="presentation"><a href="#members" aria-controls="members"  role="tab" data-toggle="pill">Members</a></li>
+                        <li role="presentation"><a href="#members" aria-controls="members" role="tab" data-toggle="pill" ng-click="fetchMembers()">Members</a></li>
                     </ul>
                 </div>
 
@@ -59,9 +59,100 @@
                     </div>
 
                     <div role="tabpanel" class="tab-pane active fade" id="members">
-                        <div class="jumbotron">
+                        <div class="jumbotron membersJumbotron">
+                            <div class="preloader" ng-hide="members"></div>
+                            <div class="preloaderText" ng-hide="members">Loading</div>
+                            <div class="row" ng-show="members" style="display:flex; flex-wrap: wrap;">
+                                <div class="col-md-3" ng-repeat="member in members">
+                                    
+                                    <div class="modal fade bs-example-modal-lg" id="{{'membersModal' + member.login}}" tabindex="-1" role="dialog" aria-labelledBy="{{'membersModel' + member.login + 'Label'}}">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="{{'membersModal' + member.login + 'Label'}}">Member Details</h4>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    
+                                                    <div class="panel-group">
+                                                        <div class="panel panel-primary">
+                                                            <div class="panel-heading">
+                                                                <a data-toggle="collapse" href="{{'#memberComments' + member.login}}">
+                                                                    <h4 class="panel-title">
+                                                                        Comments <span class="badge">{{member.comments.length}}</span>
+                                                                    </h4>
+                                                                </a>
+                                                            </div>
+                                                            
+                                                            <div id="{{'memberComments' + member.login}}" class="panel-collapse collapse">
+                                                                <div class="panel-body">
+                                                                    <div class="list-group">
+                                                                        <div class="list-group-item" ng-repeat="comment in member.comments">
+                                                                            <p class="list-group-item-heading"><strong>#{{comment.id}} :</strong> {{comment.body}}</p>
+
+                                                                            <div class="list-group-item-text clearfix">
+                                                                                <p><strong>On Repository :</strong> {{comment.repositoryName}}, PR # {{comment.pullRequestNumber}}</p>
+                                                                                <span class="pull-left"><strong>Commented At :</strong> {{comment.createdAt}}</span>
+
+                                                                                <span class="pull-right"><strong>Last Updated At :</strong> {{comment.updatedAt}}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="panel panel-primary">
+                                                            <div class="panel-heading">
+                                                                <a data-toggle="collapse" href="{{'#memberReviews' + member.login}}">
+                                                                    <h4 class="panel-title">
+                                                                        Reviews <span class="badge">{{member.reviews.length}}</span>
+                                                                    </h4>
+                                                                </a>
+                                                            </div>
+                                                            
+                                                            <div id="{{'memberReviews' + member.login}}" class="panel-collapse collapse">
+                                                                <div class="panel-body">
+                                                                    <div class="list-group">
+                                                                        <div class="list-group-item" ng-repeat="review in member.reviews">
+                                                                            <p class="list-group-item-heading"><strong>#{{review.id}} </strong> at {{review.submittedAt}}</p>
+
+                                                                            <div class="list-group-item-text clearfix">
+                                                                                <div>{{review.body}}</div>
+
+                                                                                <p><strong>On Repository :</strong> {{review.repositoryName}}, PR # {{review.pullRequestNumber}}</p>
+
+                                                                                <h5 ng-if="review.comments.length > 0"><strong>Comments on this review :</strong></h5>
+                                                                                <p ng-repeat="comment in review.comments">
+                                                                                    <strong>#{{comment.id}}</strong> {{comment.body}}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>                      
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <a href="#" data-toggle="modal" data-target="{{'#membersModal' + member.login}}">
+                                        <div class="thumbnail">
+                                            <div class="caption">
+                                                <i class="fa fa-user fa-4x" aria-hidden="true"></i>
+                                                <h4>{{member.login}}</h4>
+                                                <h5>({{member.type}})</h5>
+                                            </div>
+                                        </div>                                    
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>

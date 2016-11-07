@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.webonise.gitmetrics.documents.Branch;
 import org.webonise.gitmetrics.documents.PullRequest;
 import org.webonise.gitmetrics.documents.Repository;
-import org.webonise.gitmetrics.entities.GitRepository;
 import org.webonise.gitmetrics.services.interfaces.DatabaseService;
 import org.webonise.gitmetrics.services.interfaces.EmailService;
 import org.webonise.gitmetrics.services.interfaces.HttpRequestResponseService;
@@ -34,6 +33,7 @@ public class StaleBranchNotifier {
 
     @Value("${gitmetrics.org.name}")
     private String ORGANIZATION;
+
     @Autowired
     private HttpRequestResponseService httpRequestResponseService;
 
@@ -46,28 +46,30 @@ public class StaleBranchNotifier {
     @Autowired
     private JsonParser jsonParser;
 
-    @Scheduled(cron = " 30 * * * * *")
+    @Scheduled(cron = " * * * * 3 *")
     public void notifyStaleBranches() throws IOException {
 
-        List<GitRepository> repositoryList = databaseService.findListOfRepositories();
-        for (int i = 0; i < repositoryList.size(); i++) {
-            Repository repository = databaseService.findRepositoryDetailsByName(repositoryList.get(i).getName());
+        List<Repository> repositories = databaseService.findAllRepositories();
 
+        for (Repository repository : repositories) {
             List<PullRequest> pullRequests = repository.getPullRequests();
             List<String> branches = getMergedBranches(pullRequests);
 
             List<Branch> branchList = repository.getBranches();
-            branches = filterBranchesBySentMailStatus(branchList, branches);
 
             for (String branch : branches) {
                 String branchJson = getBranchJson(branch, repository.getName());
                 String lastCommitDate = jsonParser.parse(branchJson, "commit.commit.committer.date");
-                if (getDateDifferenceInDays(lastCommitDate) >= STALE_TIME_IN_DAYS) {
+
+                if (getDifferenceFromCurrentDateInDays(lastCommitDate) >= STALE_TIME_IN_DAYS) {
                     String email = jsonParser.parse(branchJson, "commit.commit.author.email");
                     String body = "This " + branch + "is Stale Branch In " + repository.getName();
                     emailService.send(email, body, "Stale Branch");
-                    databaseService.updateMailSent(repository.getName(), branch);
-                    databaseService.updateStale(repository.getName(), branch);
+                    databaseService.updateMailSentStatus(repository.getName(), branch, true);
+                    databaseService.updateStaleStatus(repository.getName(), branch, true);
+                } else {
+                    databaseService.updateMailSentStatus(repository.getName(), branch, false);
+                    databaseService.updateStaleStatus(repository.getName(), branch, false);
                 }
             }
         }
@@ -84,28 +86,13 @@ public class StaleBranchNotifier {
         return branchJson;
     }
 
-    private long getDateDifferenceInDays(String date) {
+    private long getDifferenceFromCurrentDateInDays(String date) {
         Calendar lastCommmitDate = DatatypeConverter.parseDateTime(date);
         Date currentDate = new Date();
         long timeDifference = (currentDate.getTime() - lastCommmitDate.getTime().getTime());
         long days = timeDifference / (24 * 60 * 60 * 1000);
 
         return days;
-    }
-
-    private List<String> filterBranchesBySentMailStatus(List<Branch> branchList, List<String> branches) {
-
-        Iterator branchIterator = branchList.iterator();
-        while (branchIterator.hasNext()) {
-            Branch branch = (Branch) branchIterator.next();
-
-            Boolean mailSent = branch.getMailSent();
-            if (mailSent && branches.contains(branch.getRef())) {
-                branches.remove(branch.getRef());
-            }
-        }
-
-        return branches;
     }
 
     private List<String> getMergedBranches(List<PullRequest> pullRequests) {

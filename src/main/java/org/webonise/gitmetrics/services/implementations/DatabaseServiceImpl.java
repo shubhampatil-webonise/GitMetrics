@@ -42,6 +42,11 @@ public class DatabaseServiceImpl implements DatabaseService {
     }
 
     @Override
+    public List<Repository> findAllRepositories() {
+        return repositoryCollection.findAll();
+    }
+
+    @Override
     public Repository findRepositoryDetailsByName(String name) {
         Repository repository = repositoryCollection.findByName(name);
         return repository;
@@ -454,25 +459,12 @@ public class DatabaseServiceImpl implements DatabaseService {
     }
 
     @Override
-    public boolean getMailSent(String repositoryName, String branchName) {
+    public void updateStaleStatus(String repositoryName, String branchName, Boolean isStale) {
         Repository repository = repositoryCollection.findByName(repositoryName);
 
         for (Branch branch : repository.getBranches()) {
             if (branch.getRef().equalsIgnoreCase(branchName)) {
-                return branch.getMailSent();
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void updateStale(String repositoryName, String branchName) {
-        Repository repository = repositoryCollection.findByName(repositoryName);
-
-        for (Branch branch : repository.getBranches()) {
-            if (branch.getRef().equalsIgnoreCase(branchName)) {
-                branch.setStale(true);
+                branch.setStale(isStale);
             }
         }
 
@@ -480,14 +472,15 @@ public class DatabaseServiceImpl implements DatabaseService {
     }
 
     @Override
-    public void updateMailSent(String repositoryName, String branchName) {
+    public void updateMailSentStatus(String repositoryName, String branchName, Boolean isMailSent) {
         Repository repository = repositoryCollection.findByName(repositoryName);
 
         for (Branch branch : repository.getBranches()) {
             if (branch.getRef().equalsIgnoreCase(branchName)) {
-                branch.setMailSent(true);
+                branch.setMailSent(isMailSent);
             }
         }
+
         repositoryCollection.save(repository);
     }
 }
