@@ -29,8 +29,7 @@ public class MainController {
     @RequestMapping("/")
     public String renderHomepage(Model model, @RequestParam(required = false) boolean loginFailed, HttpServletRequest request) {
         if (sessionService.getSession(request, false) == null) {
-//            model.addAttribute("authParams", "client_id=" + clientId + "&scope=" + scope);
-            model.addAttribute("authParams", accessToken);
+            model.addAttribute("authParams", "client_id=" + clientId + "&scope=" + scope);
             model.addAttribute("loginFailed", loginFailed);
             return "index";
         } else {

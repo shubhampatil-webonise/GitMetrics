@@ -16,6 +16,7 @@ var app = angular.module("gitmetrics", []).controller("mainController", function
             return false;
         });        
     }
-
+    
     $scope.getRepoData();
+    
 })

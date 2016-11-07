@@ -18,6 +18,8 @@ import java.util.Map;
 public interface DatabaseService {
     List<GitRepository> findListOfRepositories();
 
+    List<Repository> findAllRepositories();
+
     Repository findRepositoryDetailsByName(String name);
 
     String saveRepository(Repository repository);
@@ -59,10 +61,8 @@ public interface DatabaseService {
     void deleteBranchFromRepository(String repositoryName, String ref);
 
     void addCollaboratorToRepository(String repositoryName, Collaborator collaborator);
+    
+    void updateStaleStatus(String repositoryName, String branchName, Boolean isStale);
 
-    boolean getMailSent(String repositoryName, String branchName);
-
-    void updateStale(String repositoryName, String branchName);
-
-    void updateMailSent(String repositoryName, String branchName);
+    void updateMailSentStatus(String repositoryName, String branchName, Boolean isMainSent);
 }

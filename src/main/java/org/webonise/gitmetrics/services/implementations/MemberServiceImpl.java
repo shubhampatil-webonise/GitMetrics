@@ -14,6 +14,7 @@ import org.webonise.gitmetrics.services.interfaces.DatabaseService;
 import org.webonise.gitmetrics.services.interfaces.HttpRequestResponseService;
 import org.webonise.gitmetrics.services.interfaces.JsonParser;
 import org.webonise.gitmetrics.services.interfaces.MemberService;
+import org.webonise.gitmetrics.services.interfaces.SessionService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,8 +32,11 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private DatabaseService databaseService;
 
-    @Value("${gitmetrics.client.personal-access-token}")
-    private String TOKEN;
+//    @Value("${gitmetrics.client.personal-access-token}")
+//    private String TOKEN;
+
+    @Autowired
+    private SessionService sessionService;
 
     @Value("${gitmetrics.org.name}")
     private String ORGANIZATION;
@@ -43,14 +47,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String getMembers() throws IOException {
         Map<String, String> headers = new HashMap();
-        headers.put("Authorization", "token " + TOKEN);
+        headers.put("Authorization", "token " + sessionService.get("accessToken"));
 
         String url = "https://api.github.com/orgs/" + ORGANIZATION + "/members";
-        String members = httpRequestResponseService.get("https://api.github.com/orgs/GitHub-Metrics/members", headers);
+        String members = httpRequestResponseService.get(url, headers);
         members = getMembersDetail(members);
-        System.out.println(members);
 
-        return null;
+        return members;
     }
 
     private String getMembersDetail(String members) {
