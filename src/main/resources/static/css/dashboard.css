@@ -1,0 +1,85 @@
+.headerNavbar .navbar {
+    border-radius : 0px;
+}
+
+.navbar-default .navbar-nav>li>a {
+    margin-right: 20px;
+    color: white;
+}
+
+.navbar {
+    background-color: whitesmoke;
+    border-radius: 0px;
+}
+
+.thumbnail {
+    text-align: center;
+    word-break: break-all;
+}
+
+.content a {
+    text-decoration: none;
+}
+
+.content a:hover {
+    text-decoration: none;
+}
+
+.container .jumbotron {
+    background-color: white;
+}
+
+.thumbnail .caption {
+    color: #428bca;
+}
+
+.thumbnail .caption h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.preloader {
+    border: 10px solid #f3f3f3; 
+    border-top: 10px solid #3498db; 
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.membersJumbotron .preloader {
+    margin: 0 auto;
+}
+
+.membersJumbotron .preloaderText {
+    width: 60px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.panel .panel-heading a {
+    text-decoration: none;
+    color: white;
+}
+
+.panel .panel-heading a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.panel .panel-heading p {
+    margin: 0px;
+}
+
+.modal-body .list-group .list-group-item-text p {
+    font-size: 12px;
+}
+
+.jumbotron p {
+    font-size: 15px;
+}

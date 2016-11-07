@@ -1,0 +1,64 @@
+.jumbotron p {
+    font-size: 15px;
+}
+
+.headerNavbar .navbar {
+    border-radius : 0px;
+}
+
+.navbar-default .navbar-nav>li>a {
+    margin-right: 20px;
+    color: white;
+}
+
+.navbar {
+    background-color: whitesmoke;
+    border-radius: 0px;
+}
+
+.attribute {
+    margin-left:7px;
+}
+
+.container .jumbotron {
+    background-color: white;
+}
+
+.container .thumbnail {
+    text-align: center;
+    word-break: break-all;
+}
+
+.thumbnail .caption {
+    color: #428bca;
+}
+
+.panel .panel-heading a {
+    text-decoration: none;
+    color: white;
+}
+
+.panel .panel-heading a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.panel .panel-heading p {
+    margin: 0px;
+}
+
+.panel-body .label {
+    margin: 0px 5px;
+}
+
+.panel-body .thumbnail {
+    display: inline-block;
+}
+
+.panel-body .badge {
+    margin: 0px 5px;
+}
+
+.modal-body .list-group .list-group-item-text p {
+    font-size: 12px;
+}

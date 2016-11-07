@@ -1,0 +1,14 @@
+.loginCard {
+    text-align:center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.loginCard span {
+    float:right;
+}
+
+.loginCard h1 {
+    font-size : 60px;
+    margin: 30px 0px;
+}
